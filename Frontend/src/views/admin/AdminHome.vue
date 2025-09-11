@@ -1,38 +1,6 @@
 <template>
   <custom-title icon="mdi-account-school-outline">
     <template #right>
-      <div>
-        <v-tooltip activator="parent" text="Import Excel" location="top">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-              variant="tonal"
-              class="me-4 bg-secondary"
-              size="small"
-              icon="mdi-database-import"
-            ></v-btn>
-          </template>
-        </v-tooltip>
-      </div>
-      <div>
-        <v-tooltip activator="parent" text="Export Excel" location="top">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-              variant="tonal"
-              class="bg-green-darken-1"
-              icon="mdi-database-export"
-              size="small"
-            ></v-btn>
-          </template>
-        </v-tooltip>
-      </div>
-      <v-btn
-        variant="tonal"
-        class="ms-4 bg-error"
-        icon="mdi-delete-forever"
-        size="small"
-      ></v-btn>
       <v-btn
         variant="outlined"
         append-icon="mdi-filter-multiple-outline"

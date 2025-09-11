@@ -1,13 +1,12 @@
 <template>
-  <v-card class="d-flex justify-space-between py-0 px-0 elevation-0 mb-3 bg-background">
-    <div class="header-title-wrapper d-flex align-center">
-      <h2 class="d-flex align-center">
+  <v-card class="d-flex justify-space-between py-2 px-0 elevation-0 mb-3">
+    <div class="header-title-wrapper d-flex align-center text-capitalize">
+      <h3 class="d-flex align-center">
         <v-icon class="mr-2" v-if="icon" color="primary">
           {{ icon }}
         </v-icon>
-        <!-- {{ $route.name }} -->
         <slot />
-      </h2>
+      </h3>
     </div>
     <div class="d-flex align-center">
       <slot name="right">
@@ -26,8 +25,7 @@
     name: 'CustomTitle',
     props: {
       icon: { type: String, required: false },
-      rightIcon: { type: String },
-      centeredTitle: { type: Boolean, default: false },
+      rightIcon: { type: String }
     }
   }
 </script>

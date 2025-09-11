@@ -55,7 +55,6 @@
         color="blue"
         size="large"
         variant="tonal"
-        @click="handleLogin"
         block
       >
         Log In
@@ -85,20 +84,7 @@
       visible: false
     }),
     methods: {
-      ...mapActions(useAuthStore, 'login'),
-      handleLogin() {
-        if (this.password === 'admin') {
-          this.$router.push('/admin-dashboard')
-        } else {
-          alert('Invalid password')
-        }
-      }
-      /// use with store 
-    //   handleLogin() {
-    //     this.login(password:this.password,email:this.email).then((res) => {
-    //         console.log(res);
-    //     })
-    //   }
+   
 
     }
   }
