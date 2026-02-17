@@ -1,8 +1,8 @@
-import { useLoadingStore } from '@/stores/loading'
+import { useLoadingStore } from '@/stores/loadingStore'
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL,
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
   headers: {
     'Access-Control-Allow-Origin': '*',
     'Content-type': 'application/json'
@@ -11,18 +11,18 @@ const api = axios.create({
 
 // Get store instance
 const loadingStore = useLoadingStore()
-
 // Request Interceptor
 api.interceptors.request.use(async config => {
+  const loaderType = config.meta?.loader || 'overlay'
   try {
-    const token = localStorage.getItem('access_token')
+    const token = localStorage.getItem('token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    loadingStore.setLoading(true)
+    loadingStore.start(loaderType)
     return config
   } catch (error) {
-    loadingStore.setLoading(false)
+    loadingStore.stop()
     return Promise.reject(error)
   }
 })
@@ -30,12 +30,12 @@ api.interceptors.request.use(async config => {
 // Response Interceptor
 api.interceptors.response.use(
   response => {
-    loadingStore.setLoading(false)
+    loadingStore.stop()
     return response
   },
 
   error => {
-    loadingStore.setLoading(false)
+    loadingStore.stop()
     return Promise.reject(error)
   }
 )
