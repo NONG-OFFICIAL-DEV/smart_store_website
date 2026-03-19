@@ -6,18 +6,11 @@ const routes = [
     name: 'FristLoginForm',
     component: () => import('@/views/UnderContruction.vue')
   },
-  // {
-  //   path: '/layout',
-  //   component: () => import('@/views/layout/Layout.vue'),
-  //   children: [
-  //     {
-  //       path: '/admin-dashboard',
-  //       name: 'Admin Dashboard',
-  //       component: () => import('@/views/admin/AdminHome.vue'),
-  //       meta: { requiresAuth: true }
-  //     }
-  //   ]
-  // }
+  {
+    path: '/emenu',
+    name: 'EMenuLanding',
+    component: () => import('@/views/EMenuLanding.vue')
+  }
 ]
 
 const router = createRouter({

@@ -1,0 +1,81 @@
+{
+  "emenu": {
+    "hero": {
+      "badge": { "en": "🍽️ Digital Menu for Restaurants", "km": "🍽️ មុខម្ហូបឌីជីថលសម្រាប់ភោជនីយដ្ឋាន" },
+      "title1":{ "en": "Let customers order", "km": "អនុញ្ញាតឱ្យអតិថិជន" },
+      "title2":{ "en": "from their phone", "km": "កម្មង់ពីទូរស័ព្ទ" },
+      "sub":   { "en": "Customers scan a QR code on the table and browse your full menu — in Khmer or English. No app download needed.", "km": "អតិថិជនស្កែន QR កូដនៅលើតុ ហើយរកមើលមុខម្ហូបពេញ — ជាភាសាខ្មែរ ឬអង់គ្លេស។ មិនចាំបាច់ទាញយកកម្មវិធី។" },
+      "cta":   { "en": "Get Started Free", "km": "ចាប់ផ្តើមឥតគិតថ្លៃ" },
+      "demo":  { "en": "See How It Works", "km": "មើលរបៀបដំណើរការ" }
+    },
+    "stats": {
+      "setup": { "en": "Setup time", "km": "ពេលដំឡើង" },
+      "lang":  { "en": "Languages",  "km": "ភាសា"       },
+      "qr":    { "en": "QR Scan",    "km": "ស្កែន QR"   },
+      "live":  { "en": "Real-time",  "km": "ពេលជាក់ស្ដែង" }
+    },
+    "how": {
+      "tag":   { "en": "HOW IT WORKS",      "km": "របៀបដំណើរការ"  },
+      "title": { "en": "3 simple steps",    "km": "៣ ជំហានងាយស្រួល" },
+      "sub":   { "en": "No technical setup required. Ready in minutes.", "km": "មិនចាំបាច់ការដំឡើងបច្ចេកទេស។ រួចរាល់ក្នុងរយៈពេលប៉ុន្មាននាទី។" },
+      "s1": {
+        "title": { "en": "Print your QR code",   "km": "បោះពុម្ព QR កូដរបស់អ្នក"   },
+        "desc":  { "en": "Generate a unique QR for each table and print it out.",  "km": "បង្កើត QR ពិសេសសម្រាប់តុនីមួយៗ ហើយបោះពុម្ព។" }
+      },
+      "s2": {
+        "title": { "en": "Customer scans",        "km": "អតិថិជនស្កែន"              },
+        "desc":  { "en": "They open the menu instantly on their phone — no app, no login.", "km": "ពួកគេបើកមុខម្ហូបភ្លាមៗលើទូរស័ព្ទ — គ្មានកម្មវិធី គ្មានការចូលប្រព័ន្ធ។" }
+      },
+      "s3": {
+        "title": { "en": "Order sent to kitchen", "km": "ការកម្មង់ផ្ញើទៅផ្ទះបាយ"       },
+        "desc":  { "en": "Their order goes straight to your POS and kitchen display.", "km": "ការកម្មង់ទៅផ្ទាល់ POS និងអេក្រង់ផ្ទះបាយ។" }
+      }
+    },
+    "features": {
+      "tag":   { "en": "FEATURES", "km": "មុខងារ" },
+      "title": { "en": "Everything your menu needs", "km": "អ្វីៗដែលមុខម្ហូបអ្នកត្រូវការ" }
+    },
+    "f1": {
+      "tag":   { "en": "BEAUTIFUL MENU",     "km": "មុខម្ហូបស្អាត"            },
+      "title": { "en": "Show your food at its best", "km": "បង្ហាញអាហាររបស់អ្នកឱ្យស្អាត" },
+      "desc":  { "en": "High-quality food photos, descriptions, prices, and category filters — all optimised for mobile.", "km": "រូបថតអាហារគុណភាពខ្ពស់ ការពិពណ៌នា តម្លៃ និងតម្រងប្រភេទ — ដំណើរការល្អលើទូរស័ព្ទ។" },
+      "c1": { "en": "HD photos per dish",           "km": "រូបថត HD ក្នុងមួយម្ហូប"          },
+      "c2": { "en": "Categories & filters",          "km": "ប្រភេទ និងតម្រង"                },
+      "c3": { "en": "Available / sold out status",   "km": "ស្ថានភាពមាន / អស់"               }
+    },
+    "f2": {
+      "tag":   { "en": "DIRECT ORDERING",    "km": "ការកម្មង់ផ្ទាល់"          },
+      "title": { "en": "Order directly from the table", "km": "កម្មង់ផ្ទាល់ពីតុ"             },
+      "desc":  { "en": "Customers add items, choose options, and send their order — it goes straight to your kitchen and POS system.", "km": "អតិថិជនបន្ថែមមុខទំនិញ ជ្រើសរើសជម្រើស ហើយផ្ញើការកម្មង់ — ទៅផ្ទះបាយ និង POS ភ្លាមៗ។" },
+      "c1": { "en": "Add to cart with modifiers",    "km": "បន្ថែមទៅរទេះ ជាមួយការកែប្រែ"   },
+      "c2": { "en": "Special request notes",         "km": "កំណត់ចំណាំការស្នើពិសេស"         },
+      "c3": { "en": "Syncs with kitchen display",    "km": "ធ្វើសមកាលភ្ជាប់ជាមួយអេក្រង់ផ្ទះបាយ" }
+    },
+    "f3": {
+      "tag":   { "en": "BILINGUAL",          "km": "ពីភាសា"                  },
+      "title": { "en": "Khmer & English, side by side", "km": "ខ្មែរ និងអង់គ្លេស ជួរដែរ"    },
+      "desc":  { "en": "Your menu displays in both Khmer and English. Customers switch language with one tap — local or tourist, everyone feels welcome.", "km": "មុខម្ហូបរបស់អ្នកបង្ហាញជាភាសាខ្មែរ និងអង់គ្លេស។ អតិថិជនប្ដូរភាសាដោយចុចតែម្ដង — ក្នុងស្រុក ឬភ្ញៀវបរទេស ស្វាគមន៍ទាំងអស់គ្នា។" },
+      "c1": { "en": "Switch language instantly",     "km": "ប្ដូរភាសាភ្លាមៗ"               },
+      "c2": { "en": "Khmer font optimised",           "km": "ពុម្ពអក្សរខ្មែរដំណើរការល្អ"   },
+      "c3": { "en": "Works for local & tourists",    "km": "ល្អសម្រាប់ក្នុងស្រុក និងភ្ញៀវ" }
+    },
+    "more": {
+      "tag":   { "en": "MORE FEATURES",      "km": "មុខងារបន្ថែម"             },
+      "title": { "en": "Built to impress",   "km": "សាងសង់ដើម្បីទាក់ទាញ"     }
+    },
+    "fc": {
+      "qr":    { "title": { "en": "QR Code Per Table",    "km": "QR កូដក្នុងមួយតុ"       }, "desc": { "en": "Unique QR for every table. Customers go directly to that table's order.", "km": "QR ពិសេសសម្រាប់រាល់តុ។ អតិថិជនចូលទៅការកម្មង់របស់តុនោះដោយផ្ទាល់។" } },
+      "photo": { "title": { "en": "Food Photography",     "km": "រូបថតអាហារ"             }, "desc": { "en": "Upload beautiful food photos to make every dish look irresistible.", "km": "ផ្ទុករូបថតអាហារស្អាត ដើម្បីធ្វើឱ្យម្ហូបគ្រប់មុខលេចធ្លោ។" } },
+      "lang":  { "title": { "en": "Khmer + English",      "km": "ខ្មែរ + អង់គ្លេស"        }, "desc": { "en": "Full bilingual menu. One tap to switch — no reload needed.", "km": "មុខម្ហូបពីភាសាពេញលេញ។ ចុចម្ដងដើម្បីប្ដូរ — មិនចាំបាច់ផ្ទុកឡើងវិញ។" } },
+      "mod":   { "title": { "en": "Item Modifiers",       "km": "ការកែប្រែម្ហូប"          }, "desc": { "en": "Let customers choose: small/large, spicy/mild, toppings and extras.", "km": "អនុញ្ញាតឱ្យអតិថិជនជ្រើស: តូច/ធំ매辣/ស្រាល ផ្នែកលើ និងបន្ថែម។" } },
+      "live":  { "title": { "en": "Live Menu Updates",    "km": "ធ្វើបច្ចុប្បន្នភាពភ្លាមៗ"  }, "desc": { "en": "Mark items as sold out in real time. Customers always see current availability.", "km": "សម្គាល់ម្ហូបថាអស់ភ្លាមៗ។ អតិថិជនជានិច្ចឃើញភាពអាចប្រើបាន។" } },
+      "mobile":{ "title": { "en": "Mobile Optimised",     "km": "ប្រើស្រួលលើទូរស័ព្ទ"     }, "desc": { "en": "Designed for phones. Fast, smooth, and beautiful on any screen size.", "km": "រចនាសម្រាប់ទូរស័ព្ទ។ លឿន រលូន និងស្អាតលើអេក្រង់គ្រប់ទំហំ។" } }
+    },
+    "cta": {
+      "title": { "en": "Ready to go digital?",    "km": "រួចរាល់ក្នុងការប្ដូរទៅឌីជីថល?"  },
+      "sub":   { "en": "Add eMenu to your restaurant today. Setup takes less than 1 minute.", "km": "បន្ថែម eMenu ទៅភោជនីយដ្ឋានរបស់អ្នកថ្ងៃនេះ។ ការដំឡើងចំណាយតិចជាង ១ នាទី។" },
+      "btn":   { "en": "Contact Us →",            "km": "ទំនាក់ទំនងយើង →"              },
+      "back":  { "en": "← Back to SmartStore",   "km": "← ត្រឡប់ទៅ SmartStore"        }
+    }
+  }
+}

@@ -1,6 +1,182 @@
 {
-  "btn": {
-    "filter": "filter",
-    "create": "create"
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "pos": "POS",
+      "inventory": "Inventory",
+      "contact": "Contact"
+    },
+    "hero": {
+      "badge": "🇰🇭 Made for Cambodia",
+      "title1": "The smarter way to run",
+      "title2": "your business",
+      "sub": "One platform for restaurants, marts, and retail shops. POS, inventory, staff, and reports — all in one place.",
+      "cta_primary": "Get Started Free",
+      "cta_secondary": "See Features"
+    },
+    "stats": {
+      "biz_types": "Business Types",
+      "products": "Products & Units",
+      "tracking": "Stock Tracking",
+      "branches": "Branch Support"
+    },
+    "biz": {
+      "tag": "BUILT FOR EVERY BUSINESS",
+      "title": "One system, every business type",
+      "restaurant": "Restaurant",
+      "cafe": "Cafe",
+      "minimart": "Mini Mart",
+      "retail": "Retail",
+      "bakery": "Bakery",
+      "food_truck": "Food Truck"
+    },
+    "restaurant_pos": {
+      "tag": "DIGITAL MENU & ORDERING",
+      "title": "Scan, order",
+      "sub": "Customers scan a QR code to view the menu and place orders directly from their phone. No waiting, no confusion — fast and easy ordering at the table.",
+      "f1": "QR code scan to access menu instantly",
+      "f2": "Order directly from mobile phone",
+      "f3": "Real-time order updates to kitchen",
+      "f4": "Reduce wait time and staff workload"
+    },
+    "mart_pos": {
+      "tag": "MART & RETAIL POS",
+      "title": "Sell by unit, pack, or box",
+      "sub": "Multi-unit pricing out of the box. Sell a single can or a case of 24 — stock deducts correctly in base units every time.",
+      "f1": "Multi-unit: can, pack, box, carton, kg",
+      "f2": "Retail & wholesale pricing per unit",
+      "f3": "Barcode scanning support",
+      "f4": "Stock auto-deducts in base units on every sale"
+    },
+    "inventory": {
+      "tag": "INVENTORY MANAGEMENT",
+      "title": "Always know what's in stock",
+      "sub": "Purchase orders, stock movements, adjustments, and low-stock alerts keep your shelves full and numbers accurate.",
+      "f1": "Purchase orders with partial receive",
+      "f2": "Full stock movement ledger",
+      "f3": "Low stock alerts & reorder levels",
+      "f4": "Stock count & manual adjustments"
+    },
+    "features": {
+      "tag": "EVERYTHING YOU NEED",
+      "title": "More than just a POS",
+      "sales_title": "Sales Reports",
+      "sales_desc": "Revenue charts, top products, payment breakdown, daily/weekly/monthly.",
+      "staff_title": "Staff & Roles",
+      "staff_desc": "Role-based access: owner, admin, cashier, staff.",
+      "branch_title": "Multi-Branch",
+      "branch_desc": "Run multiple branches. Each has its own stock and staff.",
+      "perf_title": "Product Performance",
+      "perf_desc": "Best sellers vs slow movers. Know what to push and cut.",
+      "supplier_title": "Supplier Management",
+      "supplier_desc": "Track purchase history and spending per supplier.",
+      "lang_title": "Khmer + English UI",
+      "lang_desc": "Full bilingual interface. Switch anytime."
+    },
+    "cta": {
+      "title": "Ready to get started?",
+      "sub": "Join businesses across Cambodia already using SmartStore.",
+      "btn": "Contact Us →"
+    },
+    "footer": {
+      "copy": "© 2026 SmartStore. Built for Cambodia 🇰🇭"
+    }
+  },
+  "emenu": {
+    "hero": {
+      "badge": "🍽️ Digital Menu for Restaurants",
+      "title1": "Let customers order",
+      "title2": "from their phone",
+      "sub": "Customers scan a QR code on the table and browse your full menu — in Khmer or English. No app download needed.",
+      "cta": "Get Started Free",
+      "demo": "See How It Works"
+    },
+    "stats": {
+      "setup": "Setup time",
+      "lang": "Languages",
+      "qr": "QR Scan",
+      "live": "Real-time"
+    },
+    "how": {
+      "tag": "HOW IT WORKS",
+      "title": "3 simple steps",
+      "sub": "No technical setup required. Ready in minutes.",
+      "s1": {
+        "title": "Print your QR code",
+        "desc": "Generate a unique QR for each table and print it out."
+      },
+      "s2": {
+        "title": "Customer scans",
+        "desc": "They open the menu instantly on their phone — no app, no login."
+      },
+      "s3": {
+        "title": "Order sent to kitchen",
+        "desc": "Their order goes straight to your POS and kitchen display."
+      }
+    },
+    "features": {
+      "tag": "FEATURES",
+      "title": "Everything your menu needs"
+    },
+    "f1": {
+      "tag": "BEAUTIFUL MENU",
+      "title": "Show your food at its best",
+      "desc": "High-quality food photos, descriptions, prices, and category filters — all optimised for mobile.",
+      "c1": "HD photos per dish",
+      "c2": "Categories & filters",
+      "c3": "Available / sold out status"
+    },
+    "f2": {
+      "tag": "DIRECT ORDERING",
+      "title": "Order directly from the table",
+      "desc": "Customers add items, choose options, and send their order — it goes straight to your kitchen and POS system.",
+      "c1": "Add to cart with modifiers",
+      "c2": "Special request notes",
+      "c3": "Syncs with kitchen display"
+    },
+    "f3": {
+      "tag": "BILINGUAL",
+      "title": "Khmer & English, side by side",
+      "desc": "Your menu displays in both Khmer and English. Customers switch language with one tap — local or tourist, everyone feels welcome.",
+      "c1": "Switch language instantly",
+      "c2": "Khmer font optimised",
+      "c3": "Works for local & tourists"
+    },
+    "more": {
+      "tag": "MORE FEATURES",
+      "title": "Built to impress"
+    },
+    "fc": {
+      "qr": {
+        "title": "QR Code Per Table",
+        "desc": "Unique QR for every table. Customers go directly to that table's order."
+      },
+      "photo": {
+        "title": "Food Photography",
+        "desc": "Upload beautiful food photos to make every dish look irresistible."
+      },
+      "lang": {
+        "title": "Khmer + English",
+        "desc": "Full bilingual menu. One tap to switch — no reload needed."
+      },
+      "mod": {
+        "title": "Item Modifiers",
+        "desc": "Let customers choose: small/large, spicy/mild, toppings and extras."
+      },
+      "live": {
+        "title": "Live Menu Updates",
+        "desc": "Mark items as sold out in real time. Customers always see current availability."
+      },
+      "mobile": {
+        "title": "Mobile Optimised",
+        "desc": "Designed for phones. Fast, smooth, and beautiful on any screen size."
+      }
+    },
+    "cta": {
+      "title": "Ready to go digital?",
+      "sub": "Add eMenu to your restaurant today. Setup takes less than 1 minute.",
+      "btn": "Contact Us →",
+      "back": "← Back to SmartStore"
+    }
   }
 }
