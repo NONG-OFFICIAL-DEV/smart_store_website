@@ -1,11 +1,11 @@
 <template>
-  <v-app>
+  <!-- <v-app> -->
     <!-- <token-expired /> -->
     <Notif ref="notifRef" dismissible :default-timeout="2000" />
     <Confirm ref="confirmRef" />
     <router-view />
     <Loading />
-  </v-app>
+  <!-- </v-app> -->
 </template>
 
 <script setup>

@@ -111,7 +111,7 @@
       </div>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="pt-0">
       <!-- ── HERO ──────────────────────────────────────────────────────── -->
       <section class="hero-section">
         <div class="hero-orb hero-orb-1" />
