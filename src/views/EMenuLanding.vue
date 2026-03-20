@@ -595,8 +595,7 @@
     AOS.init({
       duration: 700,
       easing: 'ease-out-cubic',
-      once: true,
-      disable: 'mobile'
+      once: true
     })
   })
   onUnmounted(() => window.removeEventListener('scroll', onScroll))
