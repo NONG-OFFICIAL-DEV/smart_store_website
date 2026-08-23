@@ -15,7 +15,7 @@
           :data-aos-delay="(i % 3) * 80"
         >
           <div v-if="item.rating" class="stars">
-            <Icon v-for="n in 5" :key="n" name="mdi-star" size="16" :color="n <= item.rating ? 'warning' : undefined" />
+            <Icon v-for="n in 5" :key="n" name="mdi-star" size="16" :color="n <= item.rating ? 'var(--warning)' : undefined" />
           </div>
 
           <p class="quote">"{{ item.quote }}"</p>

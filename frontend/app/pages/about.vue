@@ -65,7 +65,7 @@
           <template v-for="(v, i) in about.approach_cards ?? []" :key="v.title">
             <div class="value-card" data-aos="fade-up" :data-aos-delay="i * 100">
               <span class="value-num">{{ String(i + 1).padStart(2, '0') }}</span>
-              <Icon :name="v.icon" size="24" color="primary" />
+              <Icon :name="v.icon" size="24" color="var(--primary)" />
               <h3>{{ v.title }}</h3>
               <p>{{ v.description }}</p>
             </div>

@@ -15,7 +15,7 @@
 
         <!-- Success screen -->
         <div v-if="step === 'success'" class="success-card text-center" data-aos="fade-up">
-          <Icon name="mdi-check-circle" size="56" color="success" />
+          <Icon name="mdi-check-circle" size="56" color="var(--success)" />
           <h2 class="success-title">{{ t('onboarding.success_title', { name: productMeta.name }) }}</h2>
           <p class="section-sub success-sub">{{ t('onboarding.success_sub') }}</p>
           <Button as="a" size="lg" :href="loginUrl ?? undefined">
