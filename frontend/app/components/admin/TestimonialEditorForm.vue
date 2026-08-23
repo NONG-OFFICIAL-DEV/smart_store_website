@@ -82,9 +82,19 @@
           </Col>
 
           <Col cols="12">
+            <h3 class="section-heading">Translatable content</h3>
+            <Tabs v-model="activeLocale" class="mb-3">
+              <TabsList>
+                <TabsTrigger v-for="loc in LOCALES" :key="loc.code" :value="loc.code">
+                  {{ loc.label }}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </Col>
+          <Col cols="12">
             <div class="field">
               <Label for="quote">Quote</Label>
-              <Textarea id="quote" v-model="form.quote" rows="4" required />
+              <Textarea id="quote" v-model="tr.quote" rows="4" required />
             </div>
           </Col>
 
@@ -113,6 +123,7 @@
   import { Label } from '~/components/ui/label'
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
   import { Switch } from '~/components/ui/switch'
+  import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
   import { Textarea } from '~/components/ui/textarea'
   import { getTestimonialForEdit, createTestimonial, updateTestimonial } from '~/services/cms/adminTestimonials'
   import { listAllProducts, uploadProductMedia } from '~/services/cms/adminProducts'
@@ -124,13 +135,23 @@
   const testimonialId = ref<string | null>((route.params.id as string) || null)
   const isNew = computed(() => !testimonialId.value)
 
+  const LOCALES = [
+    { code: 'en', label: 'English' },
+    { code: 'km', label: 'Khmer' }
+  ]
+  const activeLocale = ref('en')
+  const blankTranslation = () => ({ quote: '' })
+  const translationsByLocale = reactive<Record<string, { quote: string }>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, blankTranslation()]))
+  )
+  const tr = computed(() => translationsByLocale[activeLocale.value]!)
+
   const form = reactive({
     author_name: '',
     author_title: '',
     author_avatar_url: '',
     product_id: null as string | null,
     rating: null as number | null,
-    quote: '',
     sort_order: 0,
     is_published: false
   })
@@ -174,10 +195,13 @@
           author_avatar_url: data.author_avatar_url ?? '',
           product_id: data.product_id ?? null,
           rating: data.rating ?? null,
-          quote: data.quote ?? '',
           sort_order: data.sort_order ?? 0,
           is_published: data.is_published
         })
+        for (const loc of LOCALES) {
+          const found = data.translations?.find((t) => t.locale === loc.code)
+          translationsByLocale[loc.code] = found ? { quote: found.quote ?? '' } : blankTranslation()
+        }
       }
     } catch (err: any) {
       error.value = err.message
@@ -204,7 +228,7 @@
     saving.value = true
     error.value = null
     try {
-      const payload = { ...form }
+      const payload = { ...form, ...tr.value, locale: activeLocale.value }
       if (isNew.value) {
         const created = await createTestimonial(payload)
         testimonialId.value = created.id

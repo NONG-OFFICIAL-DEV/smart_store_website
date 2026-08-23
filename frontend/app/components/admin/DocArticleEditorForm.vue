@@ -5,7 +5,7 @@
         <NuxtLink to="/admin/documentation/articles" class="back-link">
           <Icon name="mdi-arrow-left" size="16" /> Back to articles
         </NuxtLink>
-        <h1 class="editor-title">{{ isNew ? 'New article' : form.title || 'Edit article' }}</h1>
+        <h1 class="editor-title">{{ isNew ? 'New article' : tr.title || 'Edit article' }}</h1>
       </div>
       <Button :disabled="saving" @click="handleSave">
         <Icon v-if="saving" name="mdi-loading" size="16" class="animate-spin" />
@@ -23,12 +23,6 @@
       <section class="editor-section">
         <h2 class="section-heading">Details</h2>
         <Row dense>
-          <Col cols="12" sm="8">
-            <div class="field">
-              <Label for="title">Title *</Label>
-              <Input id="title" v-model="form.title" />
-            </div>
-          </Col>
           <Col cols="12" sm="4">
             <div class="field">
               <Label for="slug">Slug</Label>
@@ -36,11 +30,27 @@
               <p class="field-hint">Lowercase, hyphenated</p>
             </div>
           </Col>
+        </Row>
 
+        <h3 class="section-heading">Translatable content</h3>
+        <Tabs v-model="activeLocale" class="mb-3">
+          <TabsList>
+            <TabsTrigger v-for="loc in LOCALES" :key="loc.code" :value="loc.code">
+              {{ loc.label }}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Row dense>
+          <Col cols="12">
+            <div class="field">
+              <Label for="title">Title *</Label>
+              <Input id="title" v-model="tr.title" />
+            </div>
+          </Col>
           <Col cols="12">
             <div class="field">
               <Label for="excerpt">Excerpt</Label>
-              <Textarea id="excerpt" v-model="form.excerpt" rows="2" />
+              <Textarea id="excerpt" v-model="tr.excerpt" rows="2" />
               <p class="field-hint">Short summary shown in search results and cards</p>
             </div>
           </Col>
@@ -103,23 +113,23 @@
       </section>
 
       <section class="editor-section">
-        <h2 class="section-heading">Content</h2>
-        <RichTextEditor v-model="form.content" placeholder="Write the step-by-step guide…" />
+        <h2 class="section-heading">Content ({{ activeLocaleLabel }})</h2>
+        <RichTextEditor v-model="tr.content" placeholder="Write the step-by-step guide…" />
       </section>
 
       <section class="editor-section">
-        <h2 class="section-heading">SEO</h2>
+        <h2 class="section-heading">SEO ({{ activeLocaleLabel }})</h2>
         <Row dense>
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="seo_title">SEO title</Label>
-              <Input id="seo_title" v-model="form.seo_title" :placeholder="form.title" />
+              <Input id="seo_title" v-model="tr.seo_title" :placeholder="tr.title" />
             </div>
           </Col>
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="seo_description">SEO description</Label>
-              <Input id="seo_description" v-model="form.seo_description" :placeholder="form.excerpt" />
+              <Input id="seo_description" v-model="tr.seo_description" :placeholder="tr.excerpt" />
             </div>
           </Col>
         </Row>
@@ -134,6 +144,7 @@
   import { Input } from '~/components/ui/input'
   import { Label } from '~/components/ui/label'
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+  import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
   import { Textarea } from '~/components/ui/textarea'
   import {
     getDocArticleForEdit,
@@ -152,18 +163,25 @@
   const articleId = ref<string | null>((route.params.id as string) || null)
   const isNew = computed(() => !articleId.value)
 
+  const LOCALES = [
+    { code: 'en', label: 'English' },
+    { code: 'km', label: 'Khmer' }
+  ]
+  const activeLocale = ref('en')
+  const activeLocaleLabel = computed(() => LOCALES.find((l) => l.code === activeLocale.value)?.label ?? '')
+  const blankTranslation = () => ({ title: '', excerpt: '', content: '', seo_title: '', seo_description: '' })
+  const translationsByLocale = reactive<Record<string, ReturnType<typeof blankTranslation>>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, blankTranslation()]))
+  )
+  const tr = computed(() => translationsByLocale[activeLocale.value]!)
+
   const form = reactive({
-    title: '',
     slug: '',
-    excerpt: '',
-    content: '',
     category_id: null as string | null,
     product_id: null as string | null,
     status: 'draft',
     sort_order: 0,
-    cover_image_url: '',
-    seo_title: '',
-    seo_description: ''
+    cover_image_url: ''
   })
 
   const allProducts = ref<Product[]>([])
@@ -203,18 +221,25 @@
           return
         }
         Object.assign(form, {
-          title: data.title,
           slug: data.slug,
-          excerpt: data.excerpt ?? '',
-          content: data.content ?? '',
           category_id: data.category_id,
           product_id: data.product_id ?? null,
           status: data.status,
           sort_order: data.sort_order ?? 0,
-          cover_image_url: data.cover_image_url ?? '',
-          seo_title: data.seo_title ?? '',
-          seo_description: data.seo_description ?? ''
+          cover_image_url: data.cover_image_url ?? ''
         })
+        for (const loc of LOCALES) {
+          const found = data.translations?.find((t) => t.locale === loc.code)
+          translationsByLocale[loc.code] = found
+            ? {
+                title: found.title,
+                excerpt: found.excerpt ?? '',
+                content: found.content ?? '',
+                seo_title: found.seo_title ?? '',
+                seo_description: found.seo_description ?? ''
+              }
+            : blankTranslation()
+        }
       } else if (allCategories.value.length) {
         form.category_id = allCategories.value[0]!.id
       }
@@ -238,8 +263,8 @@
     saving.value = true
     error.value = null
     try {
-      const payload = { ...form }
-      if (!payload.slug) payload.slug = slugify(payload.title)
+      const payload = { ...form, ...tr.value, locale: activeLocale.value }
+      if (!payload.slug) payload.slug = slugify(tr.value.title)
 
       if (isNew.value) {
         const created = await createDocArticle(payload)

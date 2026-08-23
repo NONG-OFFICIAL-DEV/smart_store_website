@@ -4,7 +4,7 @@ import cmsApi from '~/services/cms/api'
 // phones, URLs) and translatable `content` (headlines, bios, labels) — see
 // SiteContentSeeder.php. These lists say which flat field goes in which
 // half when we send an update back.
-const DATA_KEYS: Record<string, string[]> = {
+export const DATA_KEYS: Record<string, string[]> = {
   hero: ['cta_secondary_url'],
   about: ['email', 'socials', 'profile_photo_url'],
   footer: ['email', 'phone', 'socials']
@@ -56,3 +56,43 @@ export const updateAbout = (id: string | undefined, payload: Record<string, any>
 
 export const getFooter = () => getBlock('footer')
 export const updateFooter = (id: string | undefined, payload: Record<string, any>) => updateBlock('footer', payload)
+
+// ── Admin editor: every locale at once, for the language switcher ──────
+// Unlike getBlock() above (public read, one resolved locale, no raw
+// translations), the admin editor needs every locale's own translation row
+// to populate its language tabs — reads via the admin endpoint instead.
+export interface SiteContentBlockForEdit {
+  id: string
+  data: Record<string, any>
+  translations: Array<{ locale: string } & Record<string, any>>
+}
+
+async function getBlockForEdit(key: string): Promise<SiteContentBlockForEdit | null> {
+  const { data } = await cmsApi.get(`/admin/site-content/${key}`, NO_OVERLAY)
+  const block = data.data
+  if (!block) return null
+  return {
+    id: block.id,
+    data: block.data ?? {},
+    translations: (block.translations ?? []).map((t: any) => ({ locale: t.locale, ...(t.content ?? {}) }))
+  }
+}
+
+async function updateBlockForLocale(key: string, dataPayload: Record<string, any>, contentPayload: Record<string, any>, locale: string) {
+  const { data: res } = await cmsApi.put(
+    `/admin/site-content/${key}`,
+    { locale, data: dataPayload, content: contentPayload },
+    NO_OVERLAY
+  )
+  return flatten(res.data)
+}
+
+export const getHeroForEdit = () => getBlockForEdit('hero')
+export const getAboutForEdit = () => getBlockForEdit('about')
+export const getFooterForEdit = () => getBlockForEdit('footer')
+export const updateHeroForLocale = (data: Record<string, any>, content: Record<string, any>, locale: string) =>
+  updateBlockForLocale('hero', data, content, locale)
+export const updateAboutForLocale = (data: Record<string, any>, content: Record<string, any>, locale: string) =>
+  updateBlockForLocale('about', data, content, locale)
+export const updateFooterForLocale = (data: Record<string, any>, content: Record<string, any>, locale: string) =>
+  updateBlockForLocale('footer', data, content, locale)

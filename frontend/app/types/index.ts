@@ -94,6 +94,13 @@ export interface Product {
   translations?: ProductTranslation[]
 }
 
+export interface SolutionTranslation {
+  locale: string
+  name: string
+  tagline: string | null
+  description: string | null
+}
+
 export interface Solution {
   id: string
   slug: string
@@ -104,6 +111,16 @@ export interface Solution {
   tagline: string | null
   description: string | null
   products?: Product[]
+  translations?: SolutionTranslation[]
+}
+
+export interface BlogPostTranslation {
+  locale: string
+  title: string
+  excerpt: string | null
+  content: string | null
+  seo_title: string | null
+  seo_description: string | null
 }
 
 export interface BlogPost {
@@ -118,6 +135,12 @@ export interface BlogPost {
   content: string | null
   seo_title: string | null
   seo_description: string | null
+  translations?: BlogPostTranslation[]
+}
+
+export interface TestimonialTranslation {
+  locale: string
+  quote: string
 }
 
 export interface Testimonial {
@@ -131,6 +154,9 @@ export interface Testimonial {
   sort_order: number
   is_published: boolean
   quote: string
+  // Every locale's raw row — only present on the admin editor's `show`
+  // response, used to populate the editor's language switcher.
+  translations?: TestimonialTranslation[]
 }
 
 export interface DocumentationArticleSummary {
@@ -142,6 +168,12 @@ export interface DocumentationArticleSummary {
   sort_order: number
   title: string
   excerpt: string | null
+}
+
+export interface DocumentationCategoryTranslation {
+  locale: string
+  name: string
+  description: string | null
 }
 
 export interface DocumentationCategory {
@@ -158,12 +190,22 @@ export interface DocumentationCategory {
   description: string | null
   children?: DocumentationCategory[]
   articles?: DocumentationArticleSummary[]
+  translations?: DocumentationCategoryTranslation[]
 }
 
 export interface DocumentationArticleLink {
   slug: string
   title: string
   excerpt?: string
+}
+
+export interface DocumentationArticleTranslation {
+  locale: string
+  title: string
+  excerpt: string | null
+  content: string | null
+  seo_title: string | null
+  seo_description: string | null
 }
 
 export interface DocumentationArticle {
@@ -185,6 +227,7 @@ export interface DocumentationArticle {
   prev?: DocumentationArticleLink | null
   next?: DocumentationArticleLink | null
   related?: DocumentationArticleLink[]
+  translations?: DocumentationArticleTranslation[]
 }
 
 export interface DocumentationSearchResult {

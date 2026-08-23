@@ -5,7 +5,7 @@
         <NuxtLink to="/admin/documentation/categories" class="back-link">
           <Icon name="mdi-arrow-left" size="16" /> Back to categories
         </NuxtLink>
-        <h1 class="editor-title">{{ isNew ? 'New category' : form.name || 'Edit category' }}</h1>
+        <h1 class="editor-title">{{ isNew ? 'New category' : tr.name || 'Edit category' }}</h1>
       </div>
       <Button :disabled="saving" @click="handleSave">
         <Icon v-if="saving" name="mdi-loading" size="16" class="animate-spin" />
@@ -23,22 +23,32 @@
       <Row dense>
         <Col cols="12" sm="6">
           <div class="field">
-            <Label for="name">Name *</Label>
-            <Input id="name" v-model="form.name" />
-          </div>
-        </Col>
-        <Col cols="12" sm="6">
-          <div class="field">
             <Label for="slug">Slug</Label>
             <Input id="slug" v-model="form.slug" />
             <p class="field-hint">Lowercase, hyphenated</p>
           </div>
         </Col>
+      </Row>
 
+      <h3 class="section-heading">Translatable content</h3>
+      <Tabs v-model="activeLocale" class="mb-3">
+        <TabsList>
+          <TabsTrigger v-for="loc in LOCALES" :key="loc.code" :value="loc.code">
+            {{ loc.label }}
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <Row dense>
+        <Col cols="12" sm="6">
+          <div class="field">
+            <Label for="name">Name *</Label>
+            <Input id="name" v-model="tr.name" />
+          </div>
+        </Col>
         <Col cols="12">
           <div class="field">
             <Label for="description">Description</Label>
-            <Textarea id="description" v-model="form.description" rows="2" />
+            <Textarea id="description" v-model="tr.description" rows="2" />
           </div>
         </Col>
 
@@ -102,6 +112,7 @@
   import { Label } from '~/components/ui/label'
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
   import { Switch } from '~/components/ui/switch'
+  import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
   import { Textarea } from '~/components/ui/textarea'
   import { getDocCategoryForEdit, createDocCategory, updateDocCategory, listAllDocCategories } from '~/services/cms/adminDocumentation'
   import { listAllProducts } from '~/services/cms/adminProducts'
@@ -113,10 +124,19 @@
   const categoryId = ref<string | null>((route.params.id as string) || null)
   const isNew = computed(() => !categoryId.value)
 
+  const LOCALES = [
+    { code: 'en', label: 'English' },
+    { code: 'km', label: 'Khmer' }
+  ]
+  const activeLocale = ref('en')
+  const blankTranslation = () => ({ name: '', description: '' })
+  const translationsByLocale = reactive<Record<string, ReturnType<typeof blankTranslation>>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, blankTranslation()]))
+  )
+  const tr = computed(() => translationsByLocale[activeLocale.value]!)
+
   const form = reactive({
-    name: '',
     slug: '',
-    description: '',
     icon: '',
     product_id: null as string | null,
     parent_id: null as string | null,
@@ -157,15 +177,19 @@
           return
         }
         Object.assign(form, {
-          name: data.name,
           slug: data.slug,
-          description: data.description ?? '',
           icon: data.icon ?? '',
           product_id: data.product_id ?? null,
           parent_id: data.parent_id ?? null,
           sort_order: data.sort_order ?? 0,
           is_active: data.is_active
         })
+        for (const loc of LOCALES) {
+          const found = data.translations?.find((t) => t.locale === loc.code)
+          translationsByLocale[loc.code] = found
+            ? { name: found.name, description: found.description ?? '' }
+            : blankTranslation()
+        }
       }
     } catch (err: any) {
       error.value = err.message
@@ -187,8 +211,8 @@
     saving.value = true
     error.value = null
     try {
-      const payload = { ...form }
-      if (!payload.slug) payload.slug = slugify(payload.name)
+      const payload = { ...form, ...tr.value, locale: activeLocale.value }
+      if (!payload.slug) payload.slug = slugify(tr.value.name)
 
       if (isNew.value) {
         const created = await createDocCategory(payload)

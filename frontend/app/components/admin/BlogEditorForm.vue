@@ -5,7 +5,7 @@
         <NuxtLink to="/admin/blog" class="back-link">
           <Icon name="mdi-arrow-left" size="16" /> Back to blog
         </NuxtLink>
-        <h1 class="editor-title">{{ isNew ? 'New post' : form.title || 'Edit post' }}</h1>
+        <h1 class="editor-title">{{ isNew ? 'New post' : tr.title || 'Edit post' }}</h1>
       </div>
       <Button :disabled="saving" @click="handleSave">
         <Icon v-if="saving" name="mdi-loading" size="16" class="animate-spin" />
@@ -30,13 +30,6 @@
               <p class="field-hint">e.g. qr-ordering-worth-it</p>
             </div>
           </Col>
-          <Col cols="12" sm="6">
-            <div class="field">
-              <Label for="title">Title</Label>
-              <Input id="title" v-model="form.title" required />
-            </div>
-          </Col>
-
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="author_name">Author name</Label>
@@ -66,28 +59,44 @@
           </Col>
 
           <Col cols="12">
+            <h3 class="section-heading">Translatable content</h3>
+            <Tabs v-model="activeLocale" class="mb-3">
+              <TabsList>
+                <TabsTrigger v-for="loc in LOCALES" :key="loc.code" :value="loc.code">
+                  {{ loc.label }}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </Col>
+          <Col cols="12">
+            <div class="field">
+              <Label for="title">Title</Label>
+              <Input id="title" v-model="tr.title" required />
+            </div>
+          </Col>
+          <Col cols="12">
             <div class="field">
               <Label for="excerpt">Excerpt (blog list card summary)</Label>
-              <Input id="excerpt" v-model="form.excerpt" />
+              <Input id="excerpt" v-model="tr.excerpt" />
             </div>
           </Col>
           <Col cols="12">
             <div class="field">
               <Label for="content">Content</Label>
-              <Textarea id="content" v-model="form.content" rows="10" required />
+              <Textarea id="content" v-model="tr.content" rows="10" required />
             </div>
           </Col>
 
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="seo_title">SEO title</Label>
-              <Input id="seo_title" v-model="form.seo_title" />
+              <Input id="seo_title" v-model="tr.seo_title" />
             </div>
           </Col>
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="seo_description">SEO description</Label>
-              <Input id="seo_description" v-model="form.seo_description" />
+              <Input id="seo_description" v-model="tr.seo_description" />
             </div>
           </Col>
 
@@ -109,6 +118,7 @@
   import { Input } from '~/components/ui/input'
   import { Label } from '~/components/ui/label'
   import { Switch } from '~/components/ui/switch'
+  import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
   import { Textarea } from '~/components/ui/textarea'
   // Explicit import — Vuetify also exports its own `useDate` (date-adapter
   // composable) which Nuxt's auto-import would otherwise resolve instead.
@@ -123,16 +133,22 @@
   const postId = ref<string | null>((route.params.id as string) || null)
   const isNew = computed(() => !postId.value)
 
+  const LOCALES = [
+    { code: 'en', label: 'English' },
+    { code: 'km', label: 'Khmer' }
+  ]
+  const activeLocale = ref('en')
+  const blankTranslation = () => ({ title: '', excerpt: '', content: '', seo_title: '', seo_description: '' })
+  const translationsByLocale = reactive<Record<string, ReturnType<typeof blankTranslation>>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, blankTranslation()]))
+  )
+  const tr = computed(() => translationsByLocale[activeLocale.value]!)
+
   const form = reactive({
     slug: '',
-    title: '',
     author_name: '',
     published_at: '',
     cover_image_url: '',
-    excerpt: '',
-    content: '',
-    seo_title: '',
-    seo_description: '',
     is_published: false
   })
 
@@ -153,16 +169,23 @@
       }
       Object.assign(form, {
         slug: data.slug,
-        title: data.title,
         author_name: data.author_name ?? '',
         published_at: data.published_at ? formatLocalDate(data.published_at) : '',
         cover_image_url: data.cover_image_url ?? '',
-        excerpt: data.excerpt ?? '',
-        content: data.content ?? '',
-        seo_title: data.seo_title ?? '',
-        seo_description: data.seo_description ?? '',
         is_published: data.is_published
       })
+      for (const loc of LOCALES) {
+        const found = data.translations?.find((t) => t.locale === loc.code)
+        translationsByLocale[loc.code] = found
+          ? {
+              title: found.title,
+              excerpt: found.excerpt ?? '',
+              content: found.content ?? '',
+              seo_title: found.seo_title ?? '',
+              seo_description: found.seo_description ?? ''
+            }
+          : blankTranslation()
+      }
     } catch (err: any) {
       error.value = err.message
     } finally {
@@ -188,7 +211,7 @@
     saving.value = true
     error.value = null
     try {
-      const payload = { ...form, published_at: form.published_at || null }
+      const payload = { ...form, ...tr.value, locale: activeLocale.value, published_at: form.published_at || null }
       if (isNew.value) {
         const created = await createBlogPost(payload)
         postId.value = created.id

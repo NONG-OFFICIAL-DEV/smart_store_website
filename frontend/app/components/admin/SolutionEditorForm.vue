@@ -5,7 +5,7 @@
         <NuxtLink to="/admin/solutions" class="back-link">
           <Icon name="mdi-arrow-left" size="16" /> Back to solutions
         </NuxtLink>
-        <h1 class="editor-title">{{ isNew ? 'New solution' : form.name || 'Edit solution' }}</h1>
+        <h1 class="editor-title">{{ isNew ? 'New solution' : tr.name || 'Edit solution' }}</h1>
       </div>
       <Button :disabled="saving" @click="handleSave">
         <Icon v-if="saving" name="mdi-loading" size="16" class="animate-spin" />
@@ -32,12 +32,6 @@
           </Col>
           <Col cols="12" sm="6">
             <div class="field">
-              <Label for="name">Name</Label>
-              <Input id="name" v-model="form.name" required />
-            </div>
-          </Col>
-          <Col cols="12" sm="6">
-            <div class="field">
               <Label for="icon">Icon (mdi-...)</Label>
               <Input id="icon" v-model="form.icon" />
             </div>
@@ -48,16 +42,33 @@
               <Input id="sort_order" v-model.number="form.sort_order" type="number" />
             </div>
           </Col>
+
           <Col cols="12">
+            <h3 class="section-heading">Translatable content</h3>
+            <Tabs v-model="activeLocale" class="mb-3">
+              <TabsList>
+                <TabsTrigger v-for="loc in LOCALES" :key="loc.code" :value="loc.code">
+                  {{ loc.label }}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </Col>
+          <Col cols="12" sm="6">
+            <div class="field">
+              <Label for="name">Name</Label>
+              <Input id="name" v-model="tr.name" required />
+            </div>
+          </Col>
+          <Col cols="12" sm="6">
             <div class="field">
               <Label for="tagline">Tagline</Label>
-              <Input id="tagline" v-model="form.tagline" />
+              <Input id="tagline" v-model="tr.tagline" />
             </div>
           </Col>
           <Col cols="12">
             <div class="field">
               <Label for="description">Description</Label>
-              <Textarea id="description" v-model="form.description" rows="3" />
+              <Textarea id="description" v-model="tr.description" rows="3" />
             </div>
           </Col>
 
@@ -104,6 +115,7 @@
   import { Input } from '~/components/ui/input'
   import { Label } from '~/components/ui/label'
   import { Switch } from '~/components/ui/switch'
+  import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
   import { Textarea } from '~/components/ui/textarea'
   import { getSolutionForEdit, createSolution, updateSolution } from '~/services/cms/adminSolutions'
   import { listAllProducts } from '~/services/cms/adminProducts'
@@ -115,12 +127,20 @@
   const solutionId = ref<string | null>((route.params.id as string) || null)
   const isNew = computed(() => !solutionId.value)
 
+  const LOCALES = [
+    { code: 'en', label: 'English' },
+    { code: 'km', label: 'Khmer' }
+  ]
+  const activeLocale = ref('en')
+  const blankTranslation = () => ({ name: '', tagline: '', description: '' })
+  const translationsByLocale = reactive<Record<string, { name: string; tagline: string; description: string }>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, blankTranslation()]))
+  )
+  const tr = computed(() => translationsByLocale[activeLocale.value]!)
+
   const form = reactive({
     slug: '',
-    name: '',
     icon: '',
-    tagline: '',
-    description: '',
     sort_order: 0,
     is_published: false,
     product_ids: [] as string[]
@@ -145,14 +165,17 @@
         }
         Object.assign(form, {
           slug: data.slug,
-          name: data.name,
           icon: data.icon ?? '',
-          tagline: data.tagline ?? '',
-          description: data.description ?? '',
           sort_order: data.sort_order ?? 0,
           is_published: data.is_published,
           product_ids: (data.products ?? []).map((p) => p.id)
         })
+        for (const loc of LOCALES) {
+          const found = data.translations?.find((t) => t.locale === loc.code)
+          translationsByLocale[loc.code] = found
+            ? { name: found.name, tagline: found.tagline ?? '', description: found.description ?? '' }
+            : blankTranslation()
+        }
       }
     } catch (err: any) {
       error.value = err.message
@@ -176,7 +199,7 @@
     saving.value = true
     error.value = null
     try {
-      const payload = { ...form }
+      const payload = { ...form, ...tr.value, locale: activeLocale.value }
       if (isNew.value) {
         const created = await createSolution(payload)
         solutionId.value = created.id

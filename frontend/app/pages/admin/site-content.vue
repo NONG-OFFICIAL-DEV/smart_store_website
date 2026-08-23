@@ -9,12 +9,24 @@
 
     <InlineLoader v-if="loading" min-height="120px" />
 
-    <Tabs v-else v-model="tab" class="w-full">
-      <TabsList class="mb-6">
-        <TabsTrigger value="hero">Hero</TabsTrigger>
-        <TabsTrigger value="about">About</TabsTrigger>
-        <TabsTrigger value="footer">Footer</TabsTrigger>
-      </TabsList>
+    <template v-else>
+      <div class="language-row">
+        <Label class="language-label">Editing language</Label>
+        <Tabs v-model="activeLocale">
+          <TabsList>
+            <TabsTrigger v-for="loc in LOCALES" :key="loc.code" :value="loc.code">
+              {{ loc.label }}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      <Tabs v-model="tab" class="w-full">
+        <TabsList class="mb-6">
+          <TabsTrigger value="hero">Hero</TabsTrigger>
+          <TabsTrigger value="about">About</TabsTrigger>
+          <TabsTrigger value="footer">Footer</TabsTrigger>
+        </TabsList>
 
       <!-- ── Hero ── -->
       <TabsContent value="hero">
@@ -23,63 +35,63 @@
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Badge text</Label>
-                <Input v-model="hero.badge_text" />
+                <Input v-model="htr.badge_text" />
               </div>
             </Col>
             <Col cols="12" sm="6" />
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Headline</Label>
-                <Input v-model="hero.headline" />
+                <Input v-model="htr.headline" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Subheadline</Label>
-                <Input v-model="hero.subheadline" />
+                <Input v-model="htr.subheadline" />
               </div>
             </Col>
             <Col cols="12">
               <div class="field">
                 <Label>Description</Label>
-                <Textarea v-model="hero.description" rows="2" />
+                <Textarea v-model="htr.description" rows="2" />
               </div>
             </Col>
             <Col cols="12">
               <div class="field">
                 <Label>Trust line</Label>
-                <Input v-model="hero.trust_line" />
+                <Input v-model="htr.trust_line" />
               </div>
             </Col>
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Primary CTA label</Label>
-                <Input v-model="hero.cta_primary_label" />
+                <Input v-model="htr.cta_primary_label" />
               </div>
             </Col>
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Secondary CTA label</Label>
-                <Input v-model="hero.cta_secondary_label" />
+                <Input v-model="htr.cta_secondary_label" />
               </div>
             </Col>
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Secondary CTA URL</Label>
-                <Input v-model="hero.cta_secondary_url" />
+                <Input v-model="heroData.cta_secondary_url" />
               </div>
             </Col>
           </Row>
 
           <h3 class="sub-heading">Stats</h3>
-          <div v-for="(s, i) in hero.stats" :key="i" class="repeat-row">
+          <div v-for="(s, i) in htr.stats" :key="i" class="repeat-row">
             <Input v-model="s.num" placeholder="Value" />
             <Input v-model="s.label" placeholder="Label" />
-            <Button size="icon-sm" variant="ghost" @click="hero.stats.splice(i, 1)">
+            <Button size="icon-sm" variant="ghost" @click="htr.stats.splice(i, 1)">
               <Icon name="mdi-close" size="16" />
             </Button>
           </div>
-          <Button size="sm" variant="secondary" @click="hero.stats.push({ num: '', label: '' })">
+          <Button size="sm" variant="secondary" @click="htr.stats.push({ num: '', label: '' })">
             <Icon name="mdi-plus" size="16" />
             Add stat
           </Button>
@@ -101,32 +113,32 @@
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Eyebrow tag</Label>
-                <Input v-model="about.hero_tag" />
+                <Input v-model="atr.hero_tag" />
               </div>
             </Col>
             <Col cols="12" sm="6" />
             <Col cols="12">
               <div class="field">
                 <Label>Heading</Label>
-                <Input v-model="about.hero_heading" />
+                <Input v-model="atr.hero_heading" />
               </div>
             </Col>
             <Col cols="12">
               <div class="field">
                 <Label>Description</Label>
-                <Textarea v-model="about.hero_description" rows="2" />
+                <Textarea v-model="atr.hero_description" rows="2" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Primary CTA label</Label>
-                <Input v-model="about.hero_cta_primary_label" />
+                <Input v-model="atr.hero_cta_primary_label" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Secondary CTA label</Label>
-                <Input v-model="about.hero_cta_secondary_label" />
+                <Input v-model="atr.hero_cta_secondary_label" />
               </div>
             </Col>
           </Row>
@@ -136,13 +148,13 @@
             <Col cols="12">
               <div class="field">
                 <Label>Title</Label>
-                <Input v-model="about.story_title" />
+                <Input v-model="atr.story_title" />
               </div>
             </Col>
             <Col cols="12">
               <div class="field">
                 <Label>Content (separate paragraphs with a blank line)</Label>
-                <Textarea v-model="about.story_content" rows="4" />
+                <Textarea v-model="atr.story_content" rows="4" />
               </div>
             </Col>
           </Row>
@@ -152,19 +164,19 @@
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Eyebrow tag</Label>
-                <Input v-model="about.products_tag" />
+                <Input v-model="atr.products_tag" />
               </div>
             </Col>
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Title</Label>
-                <Input v-model="about.products_title" />
+                <Input v-model="atr.products_title" />
               </div>
             </Col>
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Description</Label>
-                <Input v-model="about.products_description" />
+                <Input v-model="atr.products_description" />
               </div>
             </Col>
           </Row>
@@ -174,28 +186,28 @@
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Eyebrow tag</Label>
-                <Input v-model="about.approach_tag" />
+                <Input v-model="atr.approach_tag" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Title</Label>
-                <Input v-model="about.approach_title" />
+                <Input v-model="atr.approach_title" />
               </div>
             </Col>
           </Row>
-          <div v-for="(c, i) in about.approach_cards" :key="i" class="repeat-row repeat-row--wide">
+          <div v-for="(c, i) in atr.approach_cards" :key="i" class="repeat-row repeat-row--wide">
             <Input v-model="c.icon" placeholder="Icon (mdi-...)" />
             <Input v-model="c.title" placeholder="Title" />
             <Input v-model="c.description" placeholder="Description" />
-            <Button size="icon-sm" variant="ghost" @click="about.approach_cards.splice(i, 1)">
+            <Button size="icon-sm" variant="ghost" @click="atr.approach_cards.splice(i, 1)">
               <Icon name="mdi-close" size="16" />
             </Button>
           </div>
           <Button
             size="sm"
             variant="secondary"
-            @click="about.approach_cards.push({ icon: 'mdi-check-circle-outline', title: '', description: '' })"
+            @click="atr.approach_cards.push({ icon: 'mdi-check-circle-outline', title: '', description: '' })"
           >
             <Icon name="mdi-plus" size="16" />
             Add card
@@ -206,17 +218,17 @@
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Title</Label>
-                <Input v-model="about.audience_title" />
+                <Input v-model="atr.audience_title" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Description</Label>
-                <Input v-model="about.audience_description" />
+                <Input v-model="atr.audience_description" />
               </div>
             </Col>
           </Row>
-          <div v-for="(ex, i) in about.audience_examples" :key="i" class="nested-card nested-card--shot">
+          <div v-for="(ex, i) in atr.audience_examples" :key="i" class="nested-card nested-card--shot">
             <img v-if="ex.image_url" :src="ex.image_url" class="shot-preview" :alt="ex.label" />
             <Row dense class="grow">
               <Col cols="12" sm="6" md="3">
@@ -263,19 +275,19 @@
                   size="icon-sm"
                   variant="ghost"
                   class="text-destructive hover:text-destructive"
-                  @click="about.audience_examples.splice(i, 1)"
+                  @click="atr.audience_examples.splice(i, 1)"
                 >
                   <Icon name="mdi-delete-outline" size="16" />
                 </Button>
               </Col>
             </Row>
           </div>
-          <p v-if="!about.audience_examples.length" class="nested-empty">No examples yet.</p>
+          <p v-if="!atr.audience_examples.length" class="nested-empty">No examples yet.</p>
           <Button
             size="sm"
             variant="secondary"
             @click="
-              about.audience_examples.push({ icon: 'mdi-store-outline', label: '', description: '', image_url: '', featured: false })
+              atr.audience_examples.push({ icon: 'mdi-store-outline', label: '', description: '', image_url: '', featured: false })
             "
           >
             <Icon name="mdi-plus" size="16" />
@@ -287,7 +299,7 @@
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Photo URL</Label>
-                <Input v-model="about.profile_photo_url" />
+                <Input v-model="aboutData.profile_photo_url" />
               </div>
             </Col>
             <Col cols="12" sm="6">
@@ -296,37 +308,37 @@
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Greeting (e.g. Hi, I'm Nong.)</Label>
-                <Input v-model="about.profile_greeting" />
+                <Input v-model="atr.profile_greeting" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Name</Label>
-                <Input v-model="about.profile_name" />
+                <Input v-model="atr.profile_name" />
               </div>
             </Col>
             <Col cols="12">
               <div class="field">
                 <Label>Bio</Label>
-                <Textarea v-model="about.profile_bio" rows="3" />
+                <Textarea v-model="atr.profile_bio" rows="3" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Contact email</Label>
-                <Input v-model="about.email" />
+                <Input v-model="aboutData.email" />
               </div>
             </Col>
           </Row>
 
           <h4 class="sub-heading sub-heading--sm">Skills</h4>
-          <div v-for="(skill, i) in about.profile_skills" :key="i" class="repeat-row repeat-row--skill">
-            <Input v-model="about.profile_skills[i]" placeholder="Skill" />
-            <Button size="icon-sm" variant="ghost" @click="about.profile_skills.splice(i, 1)">
+          <div v-for="(skill, i) in atr.profile_skills" :key="i" class="repeat-row repeat-row--skill">
+            <Input v-model="atr.profile_skills[i]" placeholder="Skill" />
+            <Button size="icon-sm" variant="ghost" @click="atr.profile_skills.splice(i, 1)">
               <Icon name="mdi-close" size="16" />
             </Button>
           </div>
-          <Button size="sm" variant="secondary" @click="about.profile_skills.push('')">
+          <Button size="sm" variant="secondary" @click="atr.profile_skills.push('')">
             <Icon name="mdi-plus" size="16" />
             Add skill
           </Button>
@@ -336,14 +348,14 @@
             Names "Telegram" / "Facebook" / "TikTok" / "GitHub" / "LinkedIn" get their matching icon automatically;
             anything else gets a generic link icon.
           </p>
-          <div v-for="(s, i) in about.socials" :key="i" class="repeat-row">
+          <div v-for="(s, i) in aboutData.socials" :key="i" class="repeat-row">
             <Input v-model="s.name" placeholder="Name" />
             <Input v-model="s.href" placeholder="URL" />
-            <Button size="icon-sm" variant="ghost" @click="about.socials.splice(i, 1)">
+            <Button size="icon-sm" variant="ghost" @click="aboutData.socials.splice(i, 1)">
               <Icon name="mdi-close" size="16" />
             </Button>
           </div>
-          <Button size="sm" variant="secondary" @click="about.socials.push({ name: '', href: '' })">
+          <Button size="sm" variant="secondary" @click="aboutData.socials.push({ name: '', href: '' })">
             <Icon name="mdi-plus" size="16" />
             Add social link
           </Button>
@@ -353,25 +365,25 @@
             <Col cols="12">
               <div class="field">
                 <Label>Heading</Label>
-                <Input v-model="about.cta_title" />
+                <Input v-model="atr.cta_title" />
               </div>
             </Col>
             <Col cols="12">
               <div class="field">
                 <Label>Description</Label>
-                <Textarea v-model="about.cta_description" rows="2" />
+                <Textarea v-model="atr.cta_description" rows="2" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Primary CTA label</Label>
-                <Input v-model="about.cta_primary_label" />
+                <Input v-model="atr.cta_primary_label" />
               </div>
             </Col>
             <Col cols="12" sm="6">
               <div class="field">
                 <Label>Secondary CTA label</Label>
-                <Input v-model="about.cta_secondary_label" />
+                <Input v-model="atr.cta_secondary_label" />
               </div>
             </Col>
           </Row>
@@ -392,33 +404,33 @@
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Email</Label>
-                <Input v-model="footer.email" />
+                <Input v-model="footerData.email" />
               </div>
             </Col>
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Phone</Label>
-                <Input v-model="footer.phone" />
+                <Input v-model="footerData.phone" />
               </div>
             </Col>
             <Col cols="12" sm="4">
               <div class="field">
                 <Label>Address</Label>
-                <Input v-model="footer.address" />
+                <Input v-model="ftr.address" />
               </div>
             </Col>
           </Row>
 
           <h3 class="sub-heading">Social links</h3>
           <p class="hint">Names "Telegram" / "Facebook" / "TikTok" get their matching icon automatically; anything else gets a generic link icon.</p>
-          <div v-for="(s, i) in footer.socials" :key="i" class="repeat-row">
+          <div v-for="(s, i) in footerData.socials" :key="i" class="repeat-row">
             <Input v-model="s.name" placeholder="Name" />
             <Input v-model="s.href" placeholder="URL" />
-            <Button size="icon-sm" variant="ghost" @click="footer.socials.splice(i, 1)">
+            <Button size="icon-sm" variant="ghost" @click="footerData.socials.splice(i, 1)">
               <Icon name="mdi-close" size="16" />
             </Button>
           </div>
-          <Button size="sm" variant="secondary" @click="footer.socials.push({ name: '', href: '' })">
+          <Button size="sm" variant="secondary" @click="footerData.socials.push({ name: '', href: '' })">
             <Icon name="mdi-plus" size="16" />
             Add social link
           </Button>
@@ -431,7 +443,8 @@
           </div>
         </section>
       </TabsContent>
-    </Tabs>
+      </Tabs>
+    </template>
   </div>
 </template>
 
@@ -445,22 +458,17 @@
   import { Switch } from '~/components/ui/switch'
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
   import { Textarea } from '~/components/ui/textarea'
-  import { getHero, updateHero, getAbout, updateAbout, getFooter, updateFooter } from '~/services/cms/siteContent'
+  import {
+    getHeroForEdit,
+    updateHeroForLocale,
+    getAboutForEdit,
+    updateAboutForLocale,
+    getFooterForEdit,
+    updateFooterForLocale,
+    DATA_KEYS
+  } from '~/services/cms/siteContent'
   import { uploadProductMedia } from '~/services/cms/adminProducts'
   import { FALLBACK_HERO, FALLBACK_ABOUT, FALLBACK_FOOTER } from '~/stores/siteContent'
-  import type { HeroContent, AboutContent, FooterContent } from '~/types'
-
-  // This editor always keeps these array fields populated (seeded below,
-  // merged-over-defaults on load) — narrowed locally so the repeater
-  // templates below don't need an assertion at every access site.
-  type EditableHero = HeroContent & { stats: { num: string; label: string }[] }
-  type EditableAbout = AboutContent & {
-    approach_cards: { icon: string; title: string; description: string }[]
-    audience_examples: { icon: string; label: string; description: string; image_url: string; featured: boolean }[]
-    profile_skills: string[]
-    socials: { name: string; href: string }[]
-  }
-  type EditableFooter = FooterContent & { socials: { name: string; href: string }[] }
 
   const notify = useNotif()
   const tab = ref('hero')
@@ -470,22 +478,144 @@
   const uploadingAudienceImage = ref<number | null>(null)
   const error = ref<string | null>(null)
 
-  const hero = ref<EditableHero>({ ...FALLBACK_HERO } as EditableHero)
-  const about = ref<EditableAbout>({ ...FALLBACK_ABOUT } as EditableAbout)
-  const footer = ref<EditableFooter>({ ...FALLBACK_FOOTER } as EditableFooter)
+  const LOCALES = [
+    { code: 'en', label: 'English' },
+    { code: 'km', label: 'Khmer' }
+  ]
+  const activeLocale = ref('en')
+
+  // Splits a flat fallback object (data + content merged, matching the old
+  // single-locale shape) back into its two halves using the same DATA_KEYS
+  // the backend/service already use — so the initial "en" translation shows
+  // the site's real starting copy instead of blank fields, exactly like
+  // before locale tabs existed.
+  function splitFallback(key: string, fallback: Record<string, any>) {
+    const dataKeys = DATA_KEYS[key] ?? []
+    const data: Record<string, any> = {}
+    const content: Record<string, any> = {}
+    for (const [k, v] of Object.entries(fallback)) {
+      if (k === 'id') continue
+      ;(dataKeys.includes(k) ? data : content)[k] = v
+    }
+    return { data, content }
+  }
+  const HERO_FALLBACK = splitFallback('hero', FALLBACK_HERO)
+  const ABOUT_FALLBACK = splitFallback('about', FALLBACK_ABOUT)
+  const FOOTER_FALLBACK = splitFallback('footer', FALLBACK_FOOTER)
+
+  // ── Non-translatable "data" halves (same across every locale) ──
+  const heroData = reactive<Record<string, any>>({ cta_secondary_url: '', ...HERO_FALLBACK.data })
+  const aboutData = reactive<Record<string, any>>({
+    email: '',
+    profile_photo_url: '',
+    socials: [] as { name: string; href: string }[],
+    ...ABOUT_FALLBACK.data
+  })
+  const footerData = reactive<Record<string, any>>({
+    email: '',
+    phone: '',
+    socials: [] as { name: string; href: string }[],
+    ...FOOTER_FALLBACK.data
+  })
+
+  // ── Translatable "content" halves, one object per locale ──
+  function blankHeroTr() {
+    return {
+      badge_text: '',
+      headline: '',
+      subheadline: '',
+      description: '',
+      trust_line: '',
+      cta_primary_label: '',
+      cta_secondary_label: '',
+      stats: [] as { num: string; label: string }[]
+    }
+  }
+  function blankAboutTr() {
+    return {
+      hero_tag: '',
+      hero_heading: '',
+      hero_description: '',
+      hero_cta_primary_label: '',
+      hero_cta_secondary_label: '',
+      story_title: '',
+      story_content: '',
+      products_tag: '',
+      products_title: '',
+      products_description: '',
+      approach_tag: '',
+      approach_title: '',
+      approach_cards: [] as { icon: string; title: string; description: string }[],
+      audience_title: '',
+      audience_description: '',
+      audience_examples: [] as { icon: string; label: string; description: string; image_url: string; featured: boolean }[],
+      profile_greeting: '',
+      profile_name: '',
+      profile_bio: '',
+      profile_skills: [] as string[],
+      cta_title: '',
+      cta_description: '',
+      cta_primary_label: '',
+      cta_secondary_label: ''
+    }
+  }
+  function blankFooterTr() {
+    return { address: '' }
+  }
+
+  const heroTranslationsByLocale = reactive<Record<string, ReturnType<typeof blankHeroTr>>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, l.code === 'en' ? { ...blankHeroTr(), ...HERO_FALLBACK.content } : blankHeroTr()]))
+  )
+  const aboutTranslationsByLocale = reactive<Record<string, ReturnType<typeof blankAboutTr>>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, l.code === 'en' ? { ...blankAboutTr(), ...ABOUT_FALLBACK.content } : blankAboutTr()]))
+  )
+  const footerTranslationsByLocale = reactive<Record<string, ReturnType<typeof blankFooterTr>>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, l.code === 'en' ? { ...blankFooterTr(), ...FOOTER_FALLBACK.content } : blankFooterTr()]))
+  )
+
+  const htr = computed(() => heroTranslationsByLocale[activeLocale.value]!)
+  const atr = computed(() => aboutTranslationsByLocale[activeLocale.value]!)
+  const ftr = computed(() => footerTranslationsByLocale[activeLocale.value]!)
 
   onMounted(async () => {
     loading.value = true
     error.value = null
     try {
-      const [heroData, aboutData, footerData] = await Promise.all([getHero(), getAbout(), getFooter()])
-      // Merge over the same fallback content the public site shows, rather
-      // than replacing outright — a CMS row that hasn't been re-saved since
-      // a content-shape change (or was never seeded past very old defaults)
-      // still has real starting values to edit instead of blank fields.
-      if (heroData) hero.value = { ...FALLBACK_HERO, ...heroData } as EditableHero
-      if (aboutData) about.value = { ...FALLBACK_ABOUT, ...aboutData } as EditableAbout
-      if (footerData) footer.value = { ...FALLBACK_FOOTER, ...footerData } as EditableFooter
+      const [hero, about, footer] = await Promise.all([getHeroForEdit(), getAboutForEdit(), getFooterForEdit()])
+
+      if (hero) {
+        Object.assign(heroData, hero.data)
+        for (const loc of LOCALES) {
+          const found = hero.translations.find((t) => t.locale === loc.code)
+          heroTranslationsByLocale[loc.code] = found
+            ? { ...blankHeroTr(), ...found }
+            : loc.code === 'en'
+              ? { ...blankHeroTr(), ...HERO_FALLBACK.content }
+              : blankHeroTr()
+        }
+      }
+      if (about) {
+        Object.assign(aboutData, about.data)
+        for (const loc of LOCALES) {
+          const found = about.translations.find((t) => t.locale === loc.code)
+          aboutTranslationsByLocale[loc.code] = found
+            ? { ...blankAboutTr(), ...found }
+            : loc.code === 'en'
+              ? { ...blankAboutTr(), ...ABOUT_FALLBACK.content }
+              : blankAboutTr()
+        }
+      }
+      if (footer) {
+        Object.assign(footerData, footer.data)
+        for (const loc of LOCALES) {
+          const found = footer.translations.find((t) => t.locale === loc.code)
+          footerTranslationsByLocale[loc.code] = found
+            ? { ...blankFooterTr(), ...found }
+            : loc.code === 'en'
+              ? { ...blankFooterTr(), ...FOOTER_FALLBACK.content }
+              : blankFooterTr()
+        }
+      }
     } catch (err: any) {
       error.value = err.message
     } finally {
@@ -497,7 +627,7 @@
     saving.value = true
     error.value = null
     try {
-      await updateHero(hero.value.id, hero.value)
+      await updateHeroForLocale(heroData, htr.value, activeLocale.value)
       notify('Hero section saved', { type: 'success' })
     } catch (err: any) {
       notify(err.message || 'Failed to save hero section', { type: 'error' })
@@ -511,7 +641,7 @@
     if (!file) return
     uploadingPhoto.value = true
     try {
-      about.value.profile_photo_url = await uploadProductMedia(file)
+      aboutData.profile_photo_url = await uploadProductMedia(file)
     } catch (err: any) {
       notify(err.message || 'Failed to upload photo', { type: 'error' })
     } finally {
@@ -524,7 +654,7 @@
     if (!file) return
     uploadingAudienceImage.value = i
     try {
-      ;(about.value.audience_examples as any[])[i].image_url = await uploadProductMedia(file)
+      atr.value.audience_examples[i]!.image_url = await uploadProductMedia(file)
     } catch (err: any) {
       notify(err.message || 'Failed to upload image', { type: 'error' })
     } finally {
@@ -536,7 +666,7 @@
     saving.value = true
     error.value = null
     try {
-      await updateAbout(about.value.id, about.value)
+      await updateAboutForLocale(aboutData, atr.value, activeLocale.value)
       notify('About page saved', { type: 'success' })
     } catch (err: any) {
       notify(err.message || 'Failed to save About page', { type: 'error' })
@@ -549,7 +679,7 @@
     saving.value = true
     error.value = null
     try {
-      await updateFooter(footer.value.id, footer.value)
+      await updateFooterForLocale(footerData, ftr.value, activeLocale.value)
       notify('Footer saved', { type: 'success' })
     } catch (err: any) {
       notify(err.message || 'Failed to save footer', { type: 'error' })
@@ -569,6 +699,19 @@
     font-size: 0.86rem;
     color: color-mix(in srgb, var(--foreground) 60%, transparent);
     margin: 0 0 24px;
+  }
+  .language-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  }
+  .language-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--foreground) 60%, transparent);
   }
   .field {
     display: flex;
