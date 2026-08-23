@@ -24,109 +24,19 @@
 
         <!-- ═══════════════════ Nexstack POS ═══════════════════ -->
         <template v-if="activeSlug === 'nexstack-pos'">
-          <div v-if="posCycles.length > 1" class="cycle-wrap" data-aos="fade-up">
-            <div class="cycle-track" role="group" :aria-label="t('common.billing_cycle')">
-              <button
-                v-for="c in posCycles"
-                :key="c.months"
-                class="cycle-btn"
-                :class="{ 'cycle-btn--active': selectedMonths === c.months }"
-                :aria-pressed="selectedMonths === c.months"
-                @click="selectedMonths = c.months"
-              >
-                <span>{{ c.label }}</span>
-                <span v-if="Number(c.discount_percent) > 0" class="cycle-btn__badge">
-                  -{{ Number(c.discount_percent).toFixed(0) }}%
-                </span>
-              </button>
-            </div>
-          </div>
+          <!-- Same cycle-toggle + plan cards component used on the
+               Nexstack POS product detail page's pricing section. -->
+          <PosPricingCards data-aos="fade-up" />
 
-          <InlineLoader v-if="posStore.loading" min-height="320px" />
-          <Alert
-            v-else-if="!posVisiblePlans.length"
-            class="flex items-center gap-2 border-info/30 bg-info/10 text-info mx-auto max-w-[480px]"
-          >
-            <Icon name="mdi-clock-outline" size="18" />
-            <AlertDescription>{{ t('pricing.unavailable') }}</AlertDescription>
-          </Alert>
-
-          <template v-else>
-            <div class="cards-grid" :data-count="posVisiblePlans.length" data-aos="fade-up">
-              <div
-                v-for="plan in posVisiblePlans"
-                :key="plan.id"
-                class="plan-card"
-                :class="{ 'plan-card--featured': plan.popular }"
-              >
-                <Badge v-if="plan.popular" class="popular-badge bg-primary text-primary-foreground border-transparent">
-                  <Icon name="mdi-star" size="12" />
-                  {{ t('common.most_popular') }}
-                </Badge>
-
-                <h3 class="plan-name">{{ plan.name }}</h3>
-                <p class="plan-desc">{{ posPlanTagline(plan) }}</p>
-
-                <div class="price-block">
-                  <template v-if="!posAvailable(plan)">
-                    <div class="price-unavailable">
-                      <Icon name="mdi-information-outline" size="14" />
-                      <span>{{ t('pricing.free_monthly_only') }}</span>
-                    </div>
-                  </template>
-                  <template v-else-if="posIsFree(plan)">
-                    <div class="price-row">
-                      <span class="price-currency">$</span>
-                      <span class="price-amount price-amount--free">0</span>
-                    </div>
-                    <div class="price-meta">
-                      <span class="price-per">{{ t('common.per_month') }}</span>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <div class="price-row">
-                      <span class="price-currency">$</span>
-                      <span class="price-amount">{{ posMonthlyPrice(plan) }}</span>
-                    </div>
-                    <div class="price-meta">
-                      <span class="price-per">{{ t('common.per_month') }}</span>
-                      <Badge v-if="posSavingsPct(plan) > 0" class="bg-success/10 text-success border-transparent">
-                        {{ t('pricing.save_pct', { pct: posSavingsPct(plan) }) }}
-                      </Badge>
-                    </div>
-                  </template>
-                </div>
-
-                <div class="plan-divider" />
-
-                <ul class="feature-list">
-                  <li v-for="f in posTopFeatures(plan)" :key="f.key" class="feature-item">
-                    <Icon name="mdi-check" size="14" class="feature-check" />
-                    <span>{{ f.label }}</span>
-                  </li>
-                </ul>
-
-                <Button
-                  :variant="plan.popular ? 'default' : 'outline'"
-                  class="plan-cta w-full"
-                  :disabled="!posAvailable(plan)"
-                  @click="goToPosRegister()"
-                >
-                  {{ plan.code === 'enterprise' ? t('button.contact_sales') : plan.code === 'free' ? t('button.start_free') : t('button.get_started') }}
-                  <Icon name="mdi-arrow-right" size="16" />
-                </Button>
-              </div>
-            </div>
-
-            <!-- ── Feature comparison ── -->
-            <ComparisonTable
-              class="mt-16"
-              :title="t('pricing_hub.compare_title', { product: activeProductName })"
-              :subtitle="t('pricing_hub.compare_sub')"
-              :plans="posVisiblePlans.map((p) => ({ code: p.code, name: p.name }))"
-              :rows="posFeatureRows"
-            />
-          </template>
+          <!-- ── Feature comparison ── -->
+          <ComparisonTable
+            v-if="posVisiblePlans.length"
+            class="mt-16"
+            :title="t('pricing_hub.compare_title', { product: activeProductName })"
+            :subtitle="t('pricing_hub.compare_sub')"
+            :plans="posVisiblePlans.map((p) => ({ code: p.code, name: p.name }))"
+            :rows="posFeatureRows"
+          />
         </template>
 
         <!-- ═══════════════════ Studio Management ═══════════════════ -->
@@ -238,7 +148,7 @@
   import { Button } from '~/components/ui/button'
   import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
   import ComparisonTable from '~/components/sections/PricingComparisonTable.vue'
-  import type { PosPlan, StudioPlan, BillingCycle } from '~/types'
+  import type { StudioPlan } from '~/types'
 
   const { t, locale } = useI18n()
   const productsStore = useProductsStore()
@@ -276,53 +186,12 @@
   })
 
   // ── Nexstack POS ─────────────────────────────────────────────────────
+  // Cycle-toggle + plan cards themselves live in PosPricingCards.vue (the
+  // same component used on the product detail page) — only the feature
+  // comparison table's own data is computed here.
   const posVisiblePlans = computed(() =>
     (posStore.plans ?? []).filter((p) => p.is_active).map((p) => ({ ...p, popular: p.code === 'pro' }))
   )
-  const POS_TAGLINES: Record<string, string> = {
-    free: 'Get started for free',
-    starter: 'For small teams',
-    pro: 'Most popular choice',
-    enterprise: 'For large organisations'
-  }
-  const posPlanTagline = (plan: PosPlan) => POS_TAGLINES[plan.code] ?? ''
-
-  const posCycles = computed(() => {
-    const seen = new Map<number, BillingCycle & { label?: string }>()
-    ;(posStore.plans ?? []).forEach((plan: PosPlan) => {
-      ;(plan.billing_cycles ?? [])
-        .filter((c) => c.is_active)
-        .forEach((c) => {
-          if (!seen.has(c.months)) seen.set(c.months, c as BillingCycle & { label?: string })
-        })
-    })
-    return [...seen.values()].sort((a, b) => a.months - b.months)
-  })
-
-  const posIsFree = (plan: PosPlan) => parseFloat(String(plan.price_usd ?? 0)) === 0
-  function posCycleForSelected(plan: PosPlan) {
-    return (plan.billing_cycles ?? []).find((c) => c.is_active && c.months === selectedMonths.value) ?? null
-  }
-  function posAvailable(plan: PosPlan) {
-    if (posIsFree(plan)) return selectedMonths.value === 1
-    return posCycleForSelected(plan) !== null
-  }
-  function posMonthlyPrice(plan: PosPlan) {
-    const base = Number(plan.price_usd ?? 0)
-    const discount = Number(posCycleForSelected(plan)?.discount_percent ?? 0) / 100
-    return (base * (1 - discount)).toFixed(2)
-  }
-  function posSavingsPct(plan: PosPlan) {
-    return Number(posCycleForSelected(plan)?.discount_percent ?? 0)
-  }
-  // Compact cards show at most 7 features — same real per-plan feature
-  // list used on the product detail page, just capped for scannability.
-  function posTopFeatures(plan: PosPlan) {
-    return (plan.features ?? []).slice(0, 7).map((f, i) => ({
-      key: f.id ?? f.key ?? String(i),
-      label: (locale.value === 'en' || locale.value === 'km' ? f[locale.value] : undefined) ?? f.en ?? f.key ?? ''
-    }))
-  }
   // Every distinct feature across this product's plans, dedup'd by key,
   // with a ✓/— per plan — real data, nothing invented.
   const posFeatureRows = computed(() => {
@@ -340,9 +209,6 @@
     }
     return [...rows.values()]
   })
-  function goToPosRegister() {
-    navigateTo('/onboarding/nexstack-pos')
-  }
 
   // ── Studio Management ────────────────────────────────────────────────
   const STUDIO_CYCLES = [

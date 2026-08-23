@@ -179,10 +179,7 @@
     "unavailable": "Pricing is temporarily unavailable — please check back shortly.",
     "free_monthly_only": "Free plan is 1 month only",
     "save_pct": "save {pct}%",
-    "billed_every_months": "${price} billed every {months} months",
-    "discount_note_3m": "3-month plan saves 10%",
-    "discount_note_1y": "Annual plan saves 20%",
-    "footer_note": "Secure checkout · Cancel anytime · No contracts"
+    "billed_every_months": "${price} billed every {months} months"
   },
   "studio_pricing": {
     "eyebrow": "Pricing",

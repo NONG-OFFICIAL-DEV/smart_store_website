@@ -179,10 +179,7 @@
     "unavailable": "តម្លៃមិនអាចប្រើបានជាបណ្តោះអាសន្ន — សូមពិនិត្យមើលម្តងទៀតឆាប់ៗនេះ។",
     "free_monthly_only": "គម្រោងឥតគិតថ្លៃ មានរយៈពេល 1 ខែប៉ុណ្ណោះ",
     "save_pct": "សន្សំ {pct}%",
-    "billed_every_months": "គិតថ្លៃ ${price} រៀងរាល់ {months} ខែ",
-    "discount_note_3m": "គម្រោង 3 ខែ សន្សំបាន 10%",
-    "discount_note_1y": "គម្រោងប្រចាំឆ្នាំ សន្សំបាន 20%",
-    "footer_note": "ការទូទាត់មានសុវត្ថិភាព  · គ្មានកិច្ចសន្យាចង"
+    "billed_every_months": "គិតថ្លៃ ${price} រៀងរាល់ {months} ខែ"
   },
   "studio_pricing": {
     "eyebrow": "តម្លៃ",
