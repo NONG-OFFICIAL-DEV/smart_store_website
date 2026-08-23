@@ -60,6 +60,7 @@ export const FALLBACK_ABOUT: AboutContent = {
     }
   ],
 
+  audience_tag: 'Who I Build For',
   audience_title: 'Built for small businesses',
   audience_description: "Technology shouldn't be the difficult part of running a business.",
   audience_examples: [

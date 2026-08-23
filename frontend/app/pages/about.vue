@@ -77,7 +77,7 @@
 
     <!-- ── Who I Build For ──────────────────────────────────────────────── -->
     <AudienceSection
-      :tag="t('about_page.audience_tag')"
+      :tag="about.audience_tag ?? ''"
       :title="about.audience_title ?? ''"
       :description="about.audience_description ?? ''"
       :examples="about.audience_examples ?? []"
@@ -153,7 +153,6 @@
   import { Badge } from '~/components/ui/badge'
   import { Button } from '~/components/ui/button'
 
-  const { t } = useI18n()
   const store = useSiteContentStore()
   const { about } = storeToRefs(store)
   const productsStore = useProductsStore()

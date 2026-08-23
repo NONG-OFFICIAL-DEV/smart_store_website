@@ -217,11 +217,17 @@
           <Row dense>
             <Col cols="12" sm="6">
               <div class="field">
+                <Label>Eyebrow tag</Label>
+                <Input v-model="atr.audience_tag" />
+              </div>
+            </Col>
+            <Col cols="12" sm="6">
+              <div class="field">
                 <Label>Title</Label>
                 <Input v-model="atr.audience_title" />
               </div>
             </Col>
-            <Col cols="12" sm="6">
+            <Col cols="12">
               <div class="field">
                 <Label>Description</Label>
                 <Input v-model="atr.audience_description" />
@@ -546,6 +552,7 @@
       approach_tag: '',
       approach_title: '',
       approach_cards: [] as { icon: string; title: string; description: string }[],
+      audience_tag: '',
       audience_title: '',
       audience_description: '',
       audience_examples: [] as { icon: string; label: string; description: string; image_url: string; featured: boolean }[],
@@ -583,37 +590,35 @@
     try {
       const [hero, about, footer] = await Promise.all([getHeroForEdit(), getAboutForEdit(), getFooterForEdit()])
 
+      // For "en" specifically, always layer the real fallback content
+      // underneath whatever's actually saved — not just when no row exists
+      // at all. A translation row can already exist but simply predate a
+      // newly-added field (like this session's `audience_tag`), in which
+      // case it should still show its real starting value here instead of
+      // blank, exactly like the public site already does via its own
+      // fallback-merge in stores/siteContent.ts.
       if (hero) {
         Object.assign(heroData, hero.data)
         for (const loc of LOCALES) {
           const found = hero.translations.find((t) => t.locale === loc.code)
-          heroTranslationsByLocale[loc.code] = found
-            ? { ...blankHeroTr(), ...found }
-            : loc.code === 'en'
-              ? { ...blankHeroTr(), ...HERO_FALLBACK.content }
-              : blankHeroTr()
+          const base = loc.code === 'en' ? { ...blankHeroTr(), ...HERO_FALLBACK.content } : blankHeroTr()
+          heroTranslationsByLocale[loc.code] = found ? { ...base, ...found } : base
         }
       }
       if (about) {
         Object.assign(aboutData, about.data)
         for (const loc of LOCALES) {
           const found = about.translations.find((t) => t.locale === loc.code)
-          aboutTranslationsByLocale[loc.code] = found
-            ? { ...blankAboutTr(), ...found }
-            : loc.code === 'en'
-              ? { ...blankAboutTr(), ...ABOUT_FALLBACK.content }
-              : blankAboutTr()
+          const base = loc.code === 'en' ? { ...blankAboutTr(), ...ABOUT_FALLBACK.content } : blankAboutTr()
+          aboutTranslationsByLocale[loc.code] = found ? { ...base, ...found } : base
         }
       }
       if (footer) {
         Object.assign(footerData, footer.data)
         for (const loc of LOCALES) {
           const found = footer.translations.find((t) => t.locale === loc.code)
-          footerTranslationsByLocale[loc.code] = found
-            ? { ...blankFooterTr(), ...found }
-            : loc.code === 'en'
-              ? { ...blankFooterTr(), ...FOOTER_FALLBACK.content }
-              : blankFooterTr()
+          const base = loc.code === 'en' ? { ...blankFooterTr(), ...FOOTER_FALLBACK.content } : blankFooterTr()
+          footerTranslationsByLocale[loc.code] = found ? { ...base, ...found } : base
         }
       }
     } catch (err: any) {

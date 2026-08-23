@@ -68,6 +68,7 @@ class SiteContentSeeder extends Seeder
                     ['icon' => 'mdi-refresh', 'title' => 'Always Improving', 'description' => 'Products evolve through real feedback, testing, and continuous improvement.'],
                 ],
 
+                'audience_tag' => 'Who I Build For',
                 'audience_title' => 'Built for small businesses',
                 'audience_description' => "Technology shouldn't be the difficult part of running a business.",
                 'audience_examples' => [

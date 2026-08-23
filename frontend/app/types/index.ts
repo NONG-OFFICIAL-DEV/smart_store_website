@@ -326,6 +326,7 @@ export interface AboutContent {
   approach_tag?: string
   approach_title?: string
   approach_cards?: AboutApproachCard[]
+  audience_tag?: string
   audience_title?: string
   audience_description?: string
   audience_examples?: AboutAudienceExample[]
