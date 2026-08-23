@@ -56,12 +56,15 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => new ProductResource($product),
+            'data' => array_merge(
+                (new ProductResource($product))->toArray($request),
+                ['translations' => $this->translationsPayload($product)],
+            ),
         ], 201);
     }
 
     /** Full detail for the admin editor: every translation + nested content. */
-    public function show(Product $product)
+    public function show(Request $request, Product $product)
     {
         $product->load([
             'translations',
@@ -72,7 +75,10 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => new ProductResource($product),
+            'data' => array_merge(
+                (new ProductResource($product))->toArray($request),
+                ['translations' => $this->translationsPayload($product)],
+            ),
         ]);
     }
 
@@ -103,7 +109,10 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => new ProductResource($product),
+            'data' => array_merge(
+                (new ProductResource($product))->toArray($request),
+                ['translations' => $this->translationsPayload($product)],
+            ),
         ]);
     }
 
@@ -112,5 +121,20 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json(['success' => true, 'message' => 'Product deleted.']);
+    }
+
+    /** Every locale's raw translatable fields, for the editor's language switcher. */
+    private function translationsPayload(Product $product): array
+    {
+        return $product->translations->map(fn ($t) => [
+            'locale' => $t->locale,
+            'name' => $t->name,
+            'tagline' => $t->tagline,
+            'summary' => $t->summary,
+            'description' => $t->description,
+            'cta_label' => $t->cta_label,
+            'seo_title' => $t->seo_title,
+            'seo_description' => $t->seo_description,
+        ])->values()->all();
     }
 }

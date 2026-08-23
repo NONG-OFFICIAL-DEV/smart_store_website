@@ -5,7 +5,7 @@
         <NuxtLink to="/admin" class="back-link">
           <Icon name="mdi-arrow-left" size="16" /> Back to products
         </NuxtLink>
-        <h1 class="editor-title">{{ isNew ? 'New product' : form.name || 'Edit product' }}</h1>
+        <h1 class="editor-title">{{ isNew ? 'New product' : tr.name || 'Edit product' }}</h1>
       </div>
       <Button :disabled="saving" @click="handleSave">
         <Icon v-if="saving" name="mdi-loading" size="16" class="animate-spin" />
@@ -31,28 +31,45 @@
               <p class="field-hint">e.g. nexstack-pos</p>
             </div>
           </Col>
+        </Row>
+
+        <h3 class="section-heading">Translatable content</h3>
+        <p class="field-hint mb-3">
+          Text below is per-language — switch tabs to edit or add a translation. Fields left blank for a
+          language fall back to English on the public site.
+        </p>
+        <Tabs v-model="activeLocale" class="mb-4">
+          <TabsList>
+            <TabsTrigger v-for="loc in LOCALES" :key="loc.code" :value="loc.code">
+              {{ loc.label }}
+              <Icon v-if="!hasTranslation(loc.code)" name="mdi-circle-outline" size="10" class="ml-1" />
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <Row dense>
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="name">Name</Label>
-              <Input id="name" v-model="form.name" required />
+              <Input id="name" v-model="tr.name" required />
             </div>
           </Col>
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="tagline">Tagline</Label>
-              <Input id="tagline" v-model="form.tagline" />
+              <Input id="tagline" v-model="tr.tagline" />
             </div>
           </Col>
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="summary">Summary (hub card blurb)</Label>
-              <Input id="summary" v-model="form.summary" />
+              <Input id="summary" v-model="tr.summary" />
             </div>
           </Col>
           <Col cols="12">
             <div class="field">
               <Label for="description">Description</Label>
-              <Textarea id="description" v-model="form.description" rows="3" />
+              <Textarea id="description" v-model="tr.description" rows="3" />
             </div>
           </Col>
 
@@ -136,7 +153,7 @@
           <Col cols="12" sm="4">
             <div class="field">
               <Label for="cta_label">CTA label</Label>
-              <Input id="cta_label" v-model="form.cta_label" />
+              <Input id="cta_label" v-model="tr.cta_label" />
             </div>
           </Col>
           <Col cols="12" sm="4">
@@ -156,13 +173,13 @@
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="seo_title">SEO title</Label>
-              <Input id="seo_title" v-model="form.seo_title" />
+              <Input id="seo_title" v-model="tr.seo_title" />
             </div>
           </Col>
           <Col cols="12" sm="6">
             <div class="field">
               <Label for="seo_description">SEO description</Label>
-              <Input id="seo_description" v-model="form.seo_description" />
+              <Input id="seo_description" v-model="tr.seo_description" />
             </div>
           </Col>
 
@@ -339,6 +356,7 @@
   import { Label } from '~/components/ui/label'
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
   import { Switch } from '~/components/ui/switch'
+  import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
   import { Textarea } from '~/components/ui/textarea'
   import {
     getProductForEdit,
@@ -355,7 +373,7 @@
     deleteFaq,
     uploadProductMedia
   } from '~/services/cms/adminProducts'
-  import type { ProductFeature, ProductScreenshot, ProductFaq } from '~/types'
+  import type { ProductFeature, ProductScreenshot, ProductFaq, ProductTranslation } from '~/types'
 
   const notify = useNotif()
   const route = useRoute()
@@ -363,22 +381,42 @@
   const productId = ref<string | null>((route.params.id as string) || null)
   const isNew = computed(() => !productId.value)
 
-  const form = reactive({
-    slug: '',
+  const LOCALES = [
+    { code: 'en', label: 'English' },
+    { code: 'km', label: 'Khmer' }
+  ]
+  const activeLocale = ref('en')
+  // Same fields as ProductTranslation, but always plain strings (never
+  // null) since these are bound directly to text inputs — nulls from the
+  // API are coerced to '' when loaded (see `load()` below).
+  type EditableTranslation = { [K in keyof Omit<ProductTranslation, 'locale'>]: string }
+  const blankTranslation = (): EditableTranslation => ({
     name: '',
     tagline: '',
     summary: '',
     description: '',
+    cta_label: '',
+    seo_title: '',
+    seo_description: ''
+  })
+  // One entry per locale, always present (even if never saved yet) so the
+  // language tabs are editable from the start rather than only appearing
+  // once a translation already exists.
+  const translationsByLocale = reactive<Record<string, EditableTranslation>>(
+    Object.fromEntries(LOCALES.map((l) => [l.code, blankTranslation()]))
+  )
+  const tr = computed(() => translationsByLocale[activeLocale.value]!)
+  const hasTranslation = (code: string) => !!translationsByLocale[code]?.name
+
+  const form = reactive({
+    slug: '',
     logo_url: '',
     hero_image_url: '',
     demo_video_url: '',
     accent_color: '#6366F1',
     status: 'coming_soon',
     cta_type: 'register',
-    cta_label: '',
     cta_url: '',
-    seo_title: '',
-    seo_description: '',
     sort_order: 0,
     is_published: false
   })
@@ -405,23 +443,30 @@
       }
       Object.assign(form, {
         slug: data.slug,
-        name: data.name,
-        tagline: data.tagline ?? '',
-        summary: data.summary ?? '',
-        description: data.description ?? '',
         logo_url: data.logo_url ?? '',
         hero_image_url: data.hero_image_url ?? '',
         demo_video_url: data.demo_video_url ?? '',
         accent_color: data.accent_color ?? '#6366F1',
         status: data.status,
         cta_type: data.cta_type,
-        cta_label: data.cta_label ?? '',
         cta_url: data.cta_url ?? '',
-        seo_title: data.seo_title ?? '',
-        seo_description: data.seo_description ?? '',
         sort_order: data.sort_order ?? 0,
         is_published: data.is_published
       })
+      for (const loc of LOCALES) {
+        const found = data.translations?.find((t) => t.locale === loc.code)
+        translationsByLocale[loc.code] = found
+          ? {
+              name: found.name,
+              tagline: found.tagline ?? '',
+              summary: found.summary ?? '',
+              description: found.description ?? '',
+              cta_label: found.cta_label ?? '',
+              seo_title: found.seo_title ?? '',
+              seo_description: found.seo_description ?? ''
+            }
+          : blankTranslation()
+      }
       features.value = data.product_features ?? []
       screenshots.value = data.product_screenshots ?? []
       faqs.value = data.faqs ?? []
@@ -437,14 +482,29 @@
     saving.value = true
     error.value = null
     try {
-      const payload = { ...form }
+      // Each save writes only the currently active language's translation
+      // row (matching the backend's one-locale-per-call `update`/`store`) —
+      // switch tabs and save again to add/edit the other language.
+      const payload = { ...form, ...tr.value, locale: activeLocale.value }
       if (isNew.value) {
         const created = (await createProduct(payload))!
         productId.value = created.id
         navigateTo(`/admin/products/${created.id}/edit`, { replace: true })
         await load()
       } else {
-        await updateProduct(productId.value!, payload)
+        const updated = await updateProduct(productId.value!, payload)
+        const saved = updated?.translations?.find((t) => t.locale === activeLocale.value)
+        if (saved) {
+          translationsByLocale[activeLocale.value] = {
+            name: saved.name,
+            tagline: saved.tagline ?? '',
+            summary: saved.summary ?? '',
+            description: saved.description ?? '',
+            cta_label: saved.cta_label ?? '',
+            seo_title: saved.seo_title ?? '',
+            seo_description: saved.seo_description ?? ''
+          }
+        }
       }
       notify('Product saved successfully', { type: 'success' })
     } catch (err: any) {
@@ -518,7 +578,7 @@
       const url = await uploadProductMedia(file)
       const created = await createScreenshot(productId.value!, {
         url,
-        alt_text: form.name,
+        alt_text: tr.value.name,
         sort_order: screenshots.value.length + 1
       })
       screenshots.value.push(created)

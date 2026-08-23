@@ -156,7 +156,7 @@ import { getTrialLink } from '~/config/productTrials'
 // config/productTrials.ts).
 const ONBOARDABLE_SLUGS = ['nexstack-pos', 'studio-management']
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 // Bespoke, hand-built sections that only exist for specific products —
 // everything else renders purely from CMS data above.
@@ -207,21 +207,22 @@ useSeoMeta({
 // Awaited (not onMounted) so this dynamic route's content is present in the
 // server-rendered HTML — this is the whole page's content, and a crawler
 // hitting /products/some-slug directly must see the real product, not the
-// not-found state. `watch: [slug]` re-runs the fetch on client-side
+// not-found state. `watch: [slug, locale]` re-runs the fetch on client-side
 // navigation between two product pages (Vue Router reuses this page's
 // component instance across param-only changes, so a plain top-level call
-// wouldn't re-fire on its own).
+// wouldn't re-fire on its own) and when the visitor switches language while
+// already on the page, so CMS content re-resolves to the new locale.
 await useAsyncData(
-  () => `product-${slug.value}`,
+  () => `product-${slug.value}-${locale.value}`,
   async () => {
     await store.fetchProductBySlug(slug.value)
     return true
   },
-  { watch: [slug] }
+  { watch: [slug, locale] }
 )
 
 function scrollToCta() {
-  document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' })
+  document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })
 }
 
 // Hands off to this site's own onboarding wizard, which calls Studio's

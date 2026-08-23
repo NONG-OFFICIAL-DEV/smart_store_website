@@ -25,6 +25,17 @@ export interface ProductFaq {
   sort_order: number
 }
 
+export interface ProductTranslation {
+  locale: string
+  name: string
+  tagline: string | null
+  summary: string | null
+  description: string | null
+  cta_label: string | null
+  seo_title: string | null
+  seo_description: string | null
+}
+
 export interface Product {
   id: string
   slug: string
@@ -47,7 +58,11 @@ export interface Product {
   product_features?: ProductFeature[]
   product_screenshots?: ProductScreenshot[]
   faqs?: ProductFaq[]
-  translations?: unknown[]
+  // Every locale's raw row — only present on the admin editor's `show`
+  // response (see Admin\ProductController::translationsPayload), used to
+  // populate the editor's language switcher. Public responses only expose
+  // the top-level fields already resolved to the visitor's locale.
+  translations?: ProductTranslation[]
 }
 
 export interface Solution {
