@@ -176,6 +176,7 @@
     "eyebrow": "Pricing",
     "title": "Scalable Plans for Every Business",
     "subtitle": "Start free, scale as you grow. No hidden fees.",
+    "unavailable": "Pricing is temporarily unavailable — please check back shortly.",
     "free_monthly_only": "Free plan is 1 month only",
     "save_pct": "save {pct}%",
     "billed_every_months": "${price} billed every {months} months",
@@ -233,9 +234,13 @@
   },
   "pricing_hub": {
     "tag": "Pricing",
-    "title": "Simple pricing, by product",
-    "sub": "Each product has its own plans. Pick one to see full pricing.",
-    "view_plans": "View plans"
+    "title": "Simple pricing for your business",
+    "sub": "Choose the product and plan that fits the way you work.",
+    "compare_title": "{product} — Compare features",
+    "compare_sub": "See exactly what's included in each plan.",
+    "row_users": "Users",
+    "row_storage": "Storage",
+    "row_orders": "Monthly orders"
   },
   "testimonials": {
     "eyebrow": "What business owners say",
