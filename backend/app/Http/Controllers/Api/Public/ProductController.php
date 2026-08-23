@@ -28,6 +28,10 @@ class ProductController extends Controller
             'features.translations',
             'screenshots.translations',
             'faqs.translations',
+            'featureSections' => fn ($q) => $q->where('is_active', true),
+            'featureSections.translations',
+            'featureSections.items' => fn ($q) => $q->where('is_active', true),
+            'featureSections.items.translations',
         ])
             ->where('slug', $slug)
             ->where('is_published', true)

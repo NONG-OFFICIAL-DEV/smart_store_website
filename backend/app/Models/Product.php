@@ -48,6 +48,11 @@ class Product extends Model
         return $this->hasMany(ProductFaq::class)->orderBy('sort_order');
     }
 
+    public function featureSections()
+    {
+        return $this->hasMany(ProductFeatureSection::class)->orderBy('sort_order');
+    }
+
     /** Get the translation row for a given locale, falling back to English. */
     public function translation(string $locale = 'en')
     {

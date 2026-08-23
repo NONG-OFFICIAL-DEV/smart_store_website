@@ -25,6 +25,34 @@ export interface ProductFaq {
   sort_order: number
 }
 
+export interface ProductFeatureItem {
+  id: string
+  slug: string | null
+  icon: string | null
+  image_url: string | null
+  video_url: string | null
+  badge: 'popular' | 'new' | 'pro' | null
+  cta_url: string | null
+  sort_order: number
+  is_active: boolean
+  title: string
+  description: string | null
+  benefits: string[]
+  cta_label: string | null
+}
+
+export type ProductFeatureSectionType = 'feature-grid' | 'feature-showcase' | 'feature-detail' | 'workflow'
+
+export interface ProductFeatureSection {
+  id: string
+  type: ProductFeatureSectionType
+  sort_order: number
+  is_active: boolean
+  title: string | null
+  subtitle: string | null
+  items: ProductFeatureItem[]
+}
+
 export interface ProductTranslation {
   locale: string
   name: string
@@ -58,6 +86,7 @@ export interface Product {
   product_features?: ProductFeature[]
   product_screenshots?: ProductScreenshot[]
   faqs?: ProductFaq[]
+  feature_sections?: ProductFeatureSection[]
   // Every locale's raw row — only present on the admin editor's `show`
   // response (see Admin\ProductController::translationsPayload), used to
   // populate the editor's language switcher. Public responses only expose

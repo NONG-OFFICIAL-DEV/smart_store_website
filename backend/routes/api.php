@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\Admin\OnboardingSubmissionController;
 use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Admin\ProductFaqController;
 use App\Http\Controllers\Api\Admin\ProductFeatureController;
+use App\Http\Controllers\Api\Admin\ProductFeatureItemController;
+use App\Http\Controllers\Api\Admin\ProductFeatureSectionController;
 use App\Http\Controllers\Api\Admin\ProductScreenshotController;
 use App\Http\Controllers\Api\Admin\SiteContentController as AdminSiteContentController;
 use App\Http\Controllers\Api\Admin\SolutionController as AdminSolutionController;
@@ -62,6 +64,14 @@ Route::prefix('v1/admin')->middleware('auth:sanctum')->group(function () {
     Route::post('products/{product}/faqs', [ProductFaqController::class, 'store']);
     Route::put('faqs/{faq}', [ProductFaqController::class, 'update']);
     Route::delete('faqs/{faq}', [ProductFaqController::class, 'destroy']);
+
+    Route::post('products/{product}/feature-sections', [ProductFeatureSectionController::class, 'store']);
+    Route::put('feature-sections/{featureSection}', [ProductFeatureSectionController::class, 'update']);
+    Route::delete('feature-sections/{featureSection}', [ProductFeatureSectionController::class, 'destroy']);
+
+    Route::post('feature-sections/{featureSection}/items', [ProductFeatureItemController::class, 'store']);
+    Route::put('feature-items/{item}', [ProductFeatureItemController::class, 'update']);
+    Route::delete('feature-items/{item}', [ProductFeatureItemController::class, 'destroy']);
 
     Route::apiResource('solutions', AdminSolutionController::class);
     Route::apiResource('testimonials', AdminTestimonialController::class);

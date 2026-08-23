@@ -43,7 +43,7 @@
 
 <style scoped>
   .compare-header {
-    max-width: 560px;
+    max-width:900px;
     margin: 0 auto 32px;
   }
   .compare-sub {

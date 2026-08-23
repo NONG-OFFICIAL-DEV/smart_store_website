@@ -43,6 +43,7 @@ class ProductResource extends JsonResource
             'features' => ProductFeatureResource::collection($this->whenLoaded('features')),
             'screenshots' => ProductScreenshotResource::collection($this->whenLoaded('screenshots')),
             'faqs' => ProductFaqResource::collection($this->whenLoaded('faqs')),
+            'feature_sections' => ProductFeatureSectionResource::collection($this->whenLoaded('featureSections')),
 
             // Raw translations — only for the admin editor (needs every locale at once)
             'translations' => $this->whenLoaded('translations'),

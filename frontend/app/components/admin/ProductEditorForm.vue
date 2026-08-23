@@ -344,6 +344,200 @@
           </div>
           <p v-if="!faqs.length" class="nested-empty">No FAQs yet.</p>
         </section>
+
+        <!-- ── Feature Sections (product-detail-page Feature Showcase area) ── -->
+        <section class="editor-section">
+          <h2 class="section-heading">Feature Sections</h2>
+          <p class="field-hint">
+            Controls the Feature Showcase area on the product detail page (grid / interactive showcase /
+            alternating detail blocks / workflow). Leave empty to keep the older generic Features/Screenshots
+            grids there instead.
+          </p>
+
+          <div v-for="section in featureSections" :key="section.id" class="feature-section-card">
+            <Row dense>
+              <Col cols="12" sm="3">
+                <div class="field">
+                  <Label>Type</Label>
+                  <Select v-model="section.type" @update:model-value="saveSection(section)">
+                    <SelectTrigger class="w-full"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="feature-grid">feature-grid</SelectItem>
+                      <SelectItem value="feature-showcase">feature-showcase</SelectItem>
+                      <SelectItem value="feature-detail">feature-detail</SelectItem>
+                      <SelectItem value="workflow">workflow</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </Col>
+              <Col cols="12" sm="3">
+                <div class="field">
+                  <Label>Section title (optional)</Label>
+                  <Input v-model="section.title" @blur="saveSection(section)" />
+                </div>
+              </Col>
+              <Col cols="12" sm="3">
+                <div class="field">
+                  <Label>Subtitle (optional)</Label>
+                  <Input v-model="section.subtitle" @blur="saveSection(section)" />
+                </div>
+              </Col>
+              <Col cols="6" sm="1">
+                <div class="field">
+                  <Label>Order</Label>
+                  <Input v-model.number="section.sort_order" type="number" @blur="saveSection(section)" />
+                </div>
+              </Col>
+              <Col cols="6" sm="2" class="flex items-end justify-between gap-2">
+                <label class="featured-toggle">
+                  <Switch
+                    :model-value="section.is_active"
+                    @update:model-value="(v: boolean) => { section.is_active = v; saveSection(section) }"
+                  />
+                  Active
+                </label>
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="ghost"
+                  class="text-destructive hover:text-destructive"
+                  @click="removeSection(section)"
+                >
+                  <Icon name="mdi-delete-outline" size="16" />
+                </Button>
+              </Col>
+            </Row>
+
+            <div class="feature-items">
+              <div v-for="item in section.items" :key="item.id" class="nested-card nested-card--shot">
+                <img v-if="item.image_url" :src="item.image_url" class="shot-preview" :alt="item.title" />
+                <Row dense class="grow">
+                  <Col cols="12" sm="2">
+                    <div class="field">
+                      <Label>Icon (mdi-...)</Label>
+                      <Input v-model="item.icon" @blur="saveItem(section, item)" />
+                    </div>
+                  </Col>
+                  <Col cols="12" sm="3">
+                    <div class="field">
+                      <Label>Title</Label>
+                      <Input v-model="item.title" @blur="saveItem(section, item)" />
+                    </div>
+                  </Col>
+                  <Col cols="12" sm="4">
+                    <div class="field">
+                      <Label>Description</Label>
+                      <Input v-model="item.description" @blur="saveItem(section, item)" />
+                    </div>
+                  </Col>
+                  <Col cols="12" sm="3">
+                    <div class="field">
+                      <Label>Badge</Label>
+                      <Select
+                        :model-value="item.badge ?? 'none'"
+                        @update:model-value="(v) => { item.badge = v === 'none' ? null : (v as any); saveItem(section, item) }"
+                      >
+                        <SelectTrigger class="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">none</SelectItem>
+                          <SelectItem value="popular">popular</SelectItem>
+                          <SelectItem value="new">new</SelectItem>
+                          <SelectItem value="pro">pro</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </Col>
+                  <Col cols="12" sm="6">
+                    <div class="field">
+                      <Label>Benefits (one per line)</Label>
+                      <Textarea
+                        :model-value="(item.benefits ?? []).join('\n')"
+                        rows="3"
+                        @update:model-value="(v: string | number) => (item.benefits = String(v).split('\n').map((s) => s.trim()).filter(Boolean))"
+                        @blur="saveItem(section, item)"
+                      />
+                    </div>
+                  </Col>
+                  <Col cols="12" sm="4">
+                    <div class="field">
+                      <Label>Image URL</Label>
+                      <Input v-model="item.image_url" @blur="saveItem(section, item)" />
+                    </div>
+                  </Col>
+                  <Col cols="12" sm="2">
+                    <FileInput
+                      accept="image/*"
+                      :loading="uploadingFeatureImage === item.id"
+                      @change="(e: Event) => handleFeatureItemImageUpload(e, section, item)"
+                    />
+                  </Col>
+                  <Col cols="12" sm="3">
+                    <div class="field">
+                      <Label>CTA label</Label>
+                      <Input v-model="item.cta_label" @blur="saveItem(section, item)" />
+                    </div>
+                  </Col>
+                  <Col cols="12" sm="3">
+                    <div class="field">
+                      <Label>CTA URL</Label>
+                      <Input v-model="item.cta_url" @blur="saveItem(section, item)" />
+                    </div>
+                  </Col>
+                  <Col cols="6" sm="2">
+                    <div class="field">
+                      <Label>Order</Label>
+                      <Input v-model.number="item.sort_order" type="number" @blur="saveItem(section, item)" />
+                    </div>
+                  </Col>
+                  <Col cols="6" sm="2" class="flex items-center">
+                    <label class="featured-toggle">
+                      <Switch
+                        :model-value="item.is_active"
+                        @update:model-value="(v: boolean) => { item.is_active = v; saveItem(section, item) }"
+                      />
+                      Active
+                    </label>
+                  </Col>
+                  <Col cols="12" sm="2" class="flex items-end justify-end">
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      variant="ghost"
+                      class="text-destructive hover:text-destructive"
+                      @click="removeItem(section, item)"
+                    >
+                      <Icon name="mdi-delete-outline" size="16" />
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+              <p v-if="!section.items.length" class="nested-empty">No items yet.</p>
+              <Button type="button" size="sm" variant="secondary" @click="addItem(section)">
+                <Icon name="mdi-plus" size="16" />
+                Add item
+              </Button>
+            </div>
+          </div>
+          <p v-if="!featureSections.length" class="nested-empty">
+            No feature sections yet — the product page falls back to the generic Features/Screenshots grids.
+          </p>
+
+          <div class="add-section-row">
+            <Select v-model="newSectionType">
+              <SelectTrigger class="w-[220px]"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="feature-grid">feature-grid</SelectItem>
+                <SelectItem value="feature-showcase">feature-showcase</SelectItem>
+                <SelectItem value="feature-detail">feature-detail</SelectItem>
+                <SelectItem value="workflow">workflow</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button type="button" size="sm" variant="secondary" @click="addSection">
+              <Icon name="mdi-plus" size="16" />
+              Add section
+            </Button>
+          </div>
+        </section>
       </template>
     </template>
   </div>
@@ -371,9 +565,23 @@
     createFaq,
     updateFaq,
     deleteFaq,
+    createFeatureSection,
+    updateFeatureSection,
+    deleteFeatureSection,
+    createFeatureItem,
+    updateFeatureItem,
+    deleteFeatureItem,
     uploadProductMedia
   } from '~/services/cms/adminProducts'
-  import type { ProductFeature, ProductScreenshot, ProductFaq, ProductTranslation } from '~/types'
+  import type {
+    ProductFeature,
+    ProductScreenshot,
+    ProductFaq,
+    ProductFeatureSection,
+    ProductFeatureItem,
+    ProductFeatureSectionType,
+    ProductTranslation
+  } from '~/types'
 
   const notify = useNotif()
   const route = useRoute()
@@ -424,12 +632,50 @@
   const features = ref<ProductFeature[]>([])
   const screenshots = ref<ProductScreenshot[]>([])
   const faqs = ref<ProductFaq[]>([])
+  // Same reasoning as EditableTranslation above — nullable API strings
+  // coerced to '' so they can bind directly to text inputs.
+  type EditableFeatureItem = Omit<ProductFeatureItem, 'icon' | 'image_url' | 'video_url' | 'cta_url' | 'description' | 'cta_label'> & {
+    icon: string
+    image_url: string
+    video_url: string
+    cta_url: string
+    description: string
+    cta_label: string
+  }
+  type EditableFeatureSection = Omit<ProductFeatureSection, 'title' | 'subtitle' | 'items'> & {
+    title: string
+    subtitle: string
+    items: EditableFeatureItem[]
+  }
+  function toEditableItem(item: ProductFeatureItem): EditableFeatureItem {
+    return {
+      ...item,
+      icon: item.icon ?? '',
+      image_url: item.image_url ?? '',
+      video_url: item.video_url ?? '',
+      cta_url: item.cta_url ?? '',
+      description: item.description ?? '',
+      cta_label: item.cta_label ?? ''
+    }
+  }
+  function toEditableSection(section: ProductFeatureSection): EditableFeatureSection {
+    return {
+      ...section,
+      title: section.title ?? '',
+      subtitle: section.subtitle ?? '',
+      items: (section.items ?? []).map(toEditableItem)
+    }
+  }
+
+  const featureSections = ref<EditableFeatureSection[]>([])
+  const newSectionType = ref<ProductFeatureSectionType>('feature-grid')
 
   const loading = ref(false)
   const saving = ref(false)
   const error = ref<string | null>(null)
   const uploading = reactive({ logo: false, hero: false })
   const uploadingScreenshot = ref(false)
+  const uploadingFeatureImage = ref<string | null>(null)
 
   async function load() {
     if (!productId.value) return
@@ -470,6 +716,7 @@
       features.value = data.product_features ?? []
       screenshots.value = data.product_screenshots ?? []
       faqs.value = data.faqs ?? []
+      featureSections.value = (data.feature_sections ?? []).map(toEditableSection)
     } catch (err: any) {
       error.value = err.message
     } finally {
@@ -644,6 +891,97 @@
       notify(err.message || 'Failed to delete FAQ', { type: 'error' })
     }
   }
+
+  // ── Feature Sections (grid / showcase / detail / workflow) ──
+  async function addSection() {
+    try {
+      const created = await createFeatureSection(productId.value!, {
+        type: newSectionType.value,
+        sort_order: featureSections.value.length + 1
+      })
+      featureSections.value.push(toEditableSection(created))
+    } catch (err: any) {
+      notify(err.message || 'Failed to add section', { type: 'error' })
+    }
+  }
+  async function saveSection(section: EditableFeatureSection) {
+    try {
+      await updateFeatureSection(section.id, {
+        type: section.type,
+        sort_order: section.sort_order,
+        is_active: section.is_active,
+        title: section.title,
+        subtitle: section.subtitle
+      })
+    } catch (err: any) {
+      notify(err.message || 'Failed to save section', { type: 'error' })
+    }
+  }
+  async function removeSection(section: EditableFeatureSection) {
+    if (!window.confirm('Delete this section and all its items?')) return
+    try {
+      await deleteFeatureSection(section.id)
+      featureSections.value = featureSections.value.filter((s) => s.id !== section.id)
+      notify('Section deleted', { type: 'success' })
+    } catch (err: any) {
+      notify(err.message || 'Failed to delete section', { type: 'error' })
+    }
+  }
+
+  async function addItem(section: EditableFeatureSection) {
+    try {
+      const created = await createFeatureItem(section.id, {
+        title: 'New feature',
+        sort_order: section.items.length + 1
+      })
+      section.items.push(toEditableItem(created))
+    } catch (err: any) {
+      notify(err.message || 'Failed to add item', { type: 'error' })
+    }
+  }
+  async function saveItem(section: EditableFeatureSection, item: EditableFeatureItem) {
+    try {
+      await updateFeatureItem(item.id, {
+        slug: item.slug,
+        icon: item.icon,
+        image_url: item.image_url,
+        video_url: item.video_url,
+        badge: item.badge,
+        cta_url: item.cta_url,
+        sort_order: item.sort_order,
+        is_active: item.is_active,
+        title: item.title,
+        description: item.description,
+        benefits: item.benefits,
+        cta_label: item.cta_label
+      })
+    } catch (err: any) {
+      notify(err.message || 'Failed to save item', { type: 'error' })
+    }
+  }
+  async function removeItem(section: EditableFeatureSection, item: EditableFeatureItem) {
+    if (!window.confirm('Delete this item?')) return
+    try {
+      await deleteFeatureItem(item.id)
+      section.items = section.items.filter((i) => i.id !== item.id)
+      notify('Item deleted', { type: 'success' })
+    } catch (err: any) {
+      notify(err.message || 'Failed to delete item', { type: 'error' })
+    }
+  }
+  async function handleFeatureItemImageUpload(e: Event, section: EditableFeatureSection, item: EditableFeatureItem) {
+    const file = fileFromEvent(e)
+    if (!file) return
+    uploadingFeatureImage.value = item.id
+    try {
+      item.image_url = await uploadProductMedia(file)
+      await saveItem(section, item)
+    } catch (err: any) {
+      notify(err.message || 'Failed to upload image', { type: 'error' })
+    } finally {
+      uploadingFeatureImage.value = null
+    }
+  }
 </script>
 
 <style scoped>
@@ -747,5 +1085,30 @@
     font-size: 0.85rem;
     color: color-mix(in srgb, var(--foreground) 50%, transparent);
     margin: 0;
+  }
+
+  .feature-section-card {
+    padding: 16px 18px;
+    border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    background: color-mix(in srgb, var(--foreground) 2%, transparent);
+  }
+  .feature-items {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  }
+  .featured-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  .add-section-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 </style>

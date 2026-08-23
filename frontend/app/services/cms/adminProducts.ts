@@ -92,6 +92,36 @@ export async function deleteFaq(id: string) {
   await cmsApi.delete(`/admin/faqs/${id}`)
 }
 
+// ── Feature sections (grid / showcase / detail / workflow) ──────────────
+
+export async function createFeatureSection(productId: string, payload: Record<string, any>) {
+  const { data } = await cmsApi.post(`/admin/products/${productId}/feature-sections`, payload)
+  return data.data
+}
+
+export async function updateFeatureSection(id: string, payload: Record<string, any>) {
+  const { data } = await cmsApi.put(`/admin/feature-sections/${id}`, payload)
+  return data.data
+}
+
+export async function deleteFeatureSection(id: string) {
+  await cmsApi.delete(`/admin/feature-sections/${id}`)
+}
+
+export async function createFeatureItem(sectionId: string, payload: Record<string, any>) {
+  const { data } = await cmsApi.post(`/admin/feature-sections/${sectionId}/items`, payload)
+  return data.data
+}
+
+export async function updateFeatureItem(id: string, payload: Record<string, any>) {
+  const { data } = await cmsApi.put(`/admin/feature-items/${id}`, payload)
+  return data.data
+}
+
+export async function deleteFeatureItem(id: string) {
+  await cmsApi.delete(`/admin/feature-items/${id}`)
+}
+
 // ── Media ───────────────────────────────────────────────────────────────
 
 export async function uploadProductMedia(file: File): Promise<string> {

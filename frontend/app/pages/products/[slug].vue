@@ -57,71 +57,76 @@
       </Container>
     </section>
 
-    <!-- ── Features ── -->
-    <section
-      v-if="product.product_features?.length"
-      class="section-pad section-tint-mint"
-    >
-      <Container>
-        <div class="text-center mb-10" data-aos="fade-up">
-          <span class="section-tag">
-            {{ t('product_detail.features_tag') }}
-          </span>
-          <h2 class="section-title">
-            {{ t('product_detail.features_title', { name: product.name }) }}
-          </h2>
-        </div>
-        <div class="features-grid">
-          <div
-            v-for="f in product.product_features"
-            :key="f.id"
-            class="feature-card"
-            data-aos="fade-up"
-          >
-            <div
-              class="feature-icon"
-              :style="{ '--accent': product.accent_color }"
-            >
-              <Icon :name="f.icon || 'mdi-check-circle-outline'" size="22" />
-            </div>
-            <h3 class="feature-title">{{ f.title }}</h3>
-            <p class="feature-desc">{{ f.description }}</p>
+    <!-- ── Feature Showcase (CMS-driven: grid/showcase/detail/workflow
+         sections) — currently only Nexstack POS has this content; every
+         other product still shows the generic Features/Screenshots grids
+         below until it gets its own feature sections authored in the CMS. ── -->
+    <ProductFeatureSections v-if="product.feature_sections?.length" :sections="product.feature_sections" />
+
+    <template v-else>
+      <!-- ── Features ── -->
+      <section
+        v-if="product.product_features?.length"
+        class="section-pad section-tint-mint"
+      >
+        <Container>
+          <div class="text-center mb-10" data-aos="fade-up">
+            <span class="section-tag">
+              {{ t('product_detail.features_tag') }}
+            </span>
+            <h2 class="section-title">
+              {{ t('product_detail.features_title', { name: product.name }) }}
+            </h2>
           </div>
-        </div>
-      </Container>
-    </section>
+          <div class="features-grid">
+            <div
+              v-for="f in product.product_features"
+              :key="f.id"
+              class="feature-card"
+              data-aos="fade-up"
+            >
+              <div
+                class="feature-icon"
+                :style="{ '--accent': product.accent_color }"
+              >
+                <Icon :name="f.icon || 'mdi-check-circle-outline'" size="22" />
+              </div>
+              <h3 class="feature-title">{{ f.title }}</h3>
+              <p class="feature-desc">{{ f.description }}</p>
+            </div>
+          </div>
+        </Container>
+      </section>
 
-    <!-- ── Screenshots ── -->
-    <section v-if="product.product_screenshots?.length" class="section-pad">
-      <Container>
-        <div class="text-center mb-10" data-aos="fade-up">
-          <span class="section-tag">
-            {{ t('product_detail.screenshots_tag') }}
-          </span>
-          <h2 class="section-title">
-            {{ t('product_detail.screenshots_title') }}
-          </h2>
-        </div>
-        <div class="screenshots-grid">
-          <figure
-            v-for="s in product.product_screenshots"
-            :key="s.id"
-            class="screenshot"
-            data-aos="fade-up"
-          >
-            <img
-              :src="s.url"
-              :alt="s.alt_text || product.name"
-              class="rounded-lg w-full"
-            />
-            <figcaption v-if="s.caption">{{ s.caption }}</figcaption>
-          </figure>
-        </div>
-      </Container>
-    </section>
-
-    <!-- ── Deep-dive extras (bespoke per-product sections, e.g. POS mockups) ── -->
-    <component :is="extra" v-for="(extra, idx) in deepDiveExtras" :key="idx" />
+      <!-- ── Screenshots ── -->
+      <section v-if="product.product_screenshots?.length" class="section-pad">
+        <Container>
+          <div class="text-center mb-10" data-aos="fade-up">
+            <span class="section-tag">
+              {{ t('product_detail.screenshots_tag') }}
+            </span>
+            <h2 class="section-title">
+              {{ t('product_detail.screenshots_title') }}
+            </h2>
+          </div>
+          <div class="screenshots-grid">
+            <figure
+              v-for="s in product.product_screenshots"
+              :key="s.id"
+              class="screenshot"
+              data-aos="fade-up"
+            >
+              <img
+                :src="s.url"
+                :alt="s.alt_text || product.name"
+                class="rounded-lg w-full"
+              />
+              <figcaption v-if="s.caption">{{ s.caption }}</figcaption>
+            </figure>
+          </div>
+        </Container>
+      </section>
+    </template>
 
     <!-- ── Pricing ──
          Pricing is controlled entirely within each product's own SaaS
@@ -142,13 +147,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Component } from 'vue'
 import { Alert, AlertDescription } from '~/components/ui/alert'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
-import RestaurantPosSection from '~/components/sections/RestaurantPosSection.vue'
-import InventorySection from '~/components/sections/InventorySection.vue'
-import MobileQrSection from '~/components/sections/MobileQrSection.vue'
 import { getTrialLink } from '~/config/productTrials'
 
 // Products with a guided in-house onboarding wizard skip straight to it;
@@ -158,30 +159,11 @@ const ONBOARDABLE_SLUGS = ['nexstack-pos', 'studio-management']
 
 const { t, locale } = useI18n()
 
-// Bespoke, hand-built sections that only exist for specific products —
-// everything else renders purely from CMS data above.
-//
-// BizTypesSection and FeatureCardsSection were dropped from this list:
-// both duplicated content shown elsewhere (BizTypesSection's icon grid
-// FeatureCardsSection re-listed features already shown in the generic
-// CMS "Features" section above). Cutting them shortens the page without
-// losing any information a visitor doesn't already see.
-const DEEP_DIVE_EXTRAS: Record<string, Component[]> = {
-  'nexstack-pos': [
-    RestaurantPosSection,
-    InventorySection,
-    MobileQrSection
-  ]
-}
-
 const route = useRoute()
 const store = useProductsStore()
 
 const slug = computed(() => String(route.params.slug))
 const product = computed(() => store.currentProduct!)
-const deepDiveExtras = computed(
-  () => DEEP_DIVE_EXTRAS[slug.value] ?? []
-)
 
 // Default ("register") CTA hands off to this site's own onboarding
 // wizard for products that have one; otherwise falls back to that

@@ -71,6 +71,8 @@ class ProductController extends Controller
             'features.translations',
             'screenshots.translations',
             'faqs.translations',
+            'featureSections.translations',
+            'featureSections.items.translations',
         ]);
 
         return response()->json([
