@@ -23,14 +23,22 @@ const instance = getCurrentInstance()!
 const { t, locale, setLocale } = useI18n()
 const route = useRoute()
 
+// Link-preview crawlers (Telegram/Facebook/etc.) fetch pages with no cookies
+// and never run client JS, so they always see whatever locale SSR rendered
+// first — normally always `defaultLocale` ('en'), since the saved language
+// preference lives in localStorage (client-only, read in onMounted below).
+// A `?lang=km` query param lets a specific shared link render Khmer during
+// SSR itself, so its OG/meta tags (and the page) come through in Khmer.
+const queryLang = route.query.lang
+const hasQueryLangOverride = queryLang === 'km' || queryLang === 'en'
+if (hasQueryLangOverride && queryLang !== locale.value) {
+  await setLocale(queryLang)
+}
+
 // Mirrors `site.url` in nuxt.config.ts — kept as a plain constant here since
 // there's no site-config composable already wired up in this app to read it from.
 const siteUrl = 'https://www.nexstacktech.com'
-// No dedicated 1200x630 OG banner exists yet — icon.png is the closest real
-// asset (near-square, so it survives social platforms' auto-cropping better
-// than the wide wordmark logo would). Swap this for a purpose-built banner
-// image later if one gets designed.
-const ogImageUrl = `${siteUrl}/icon.png`
+const ogImageUrl = `${siteUrl}/og/website.png`
 
 // Global fallback — per-page useSeoMeta() calls (see products/[slug].vue,
 // blog/[slug].vue, etc.) override title/description with page-specific
@@ -44,8 +52,8 @@ useSeoMeta({
   ogType: 'website',
   ogUrl: () => `${siteUrl}${route.path}`,
   ogImage: ogImageUrl,
-  ogImageWidth: '1069',
-  ogImageHeight: '1069',
+  ogImageWidth: '1900',
+  ogImageHeight: '902',
 
   twitterCard: 'summary_large_image',
   twitterTitle: () => t('meta.og_title'),
