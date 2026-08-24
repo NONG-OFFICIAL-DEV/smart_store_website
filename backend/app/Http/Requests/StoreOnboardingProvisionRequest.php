@@ -22,6 +22,8 @@ class StoreOnboardingProvisionRequest extends FormRequest
             // Only meaningful for Studio today — Smart Store's self-service
             // endpoint always assigns its free plan regardless of this value.
             'plan_code' => ['nullable', 'string', 'max:100'],
+            // Same Studio-only caveat as plan_code above.
+            'billing_cycle' => ['nullable', 'string', Rule::in(['monthly', 'quarterly', 'yearly'])],
             'business_name' => ['required', 'string', 'max:150'],
             // Smart Store's own tenant table requires a real business_type_id;
             // Studio has no equivalent concept.

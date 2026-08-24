@@ -17,6 +17,7 @@ class OnboardingSubmission extends Model
         'email',
         'phone',
         'plan_code',
+        'billing_cycle',
         'status',
         'error_message',
     ];

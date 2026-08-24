@@ -208,10 +208,14 @@ function scrollToCta() {
 }
 
 // Hands off to this site's own onboarding wizard, which calls Studio's
-// real registration API server-side, carrying the chosen plan through.
+// real registration API server-side, carrying the chosen plan AND billing
+// cycle through — both flow through as query params into the wizard.
 const localePath = useLocalePath()
-function goToStudioRegister(planCode?: string) {
-  navigateTo(localePath({ path: '/onboarding/studio-management', query: planCode ? { plan: planCode } : {} }))
+function goToStudioRegister(planCode?: string, billingCycle?: string) {
+  const query: Record<string, string> = {}
+  if (planCode) query.plan = planCode
+  if (billingCycle) query.cycle = billingCycle
+  navigateTo(localePath({ path: '/onboarding/studio-management', query }))
 }
 </script>
 
