@@ -7,7 +7,8 @@ interface LanguageOption {
 }
 
 export function useLanguageSwitcher() {
-  const { t, locale, setLocale } = useI18n()
+  const { t, locale } = useI18n()
+  const switchLocalePath = useSwitchLocalePath()
 
   const menuOpen = ref(false)
 
@@ -28,25 +29,22 @@ export function useLanguageSwitcher() {
 
   const currentLang = computed(() => languages.value.find((l) => l.code === locale.value) ?? languages.value[0]!)
 
-  async function selectLang(code: string) {
+  function selectLang(code: string) {
     if (code === locale.value) {
       menuOpen.value = false
       return
     }
-    // setLocale() (not locale.value = code) — with lazy-loaded locale
-    // messages, direct assignment skips the async import that fetches the
-    // target locale's JSON, leaving every t() call unresolved (raw keys).
-    await setLocale(code as Parameters<typeof setLocale>[0])
     menuOpen.value = false
 
-    // setLocale() only re-resolves the static UI strings (nav labels,
-    // buttons, i18n/locales/*.json) — every CMS-backed store (products,
+    // Hard navigation (not client-side router) to that locale's own URL
+    // (e.g. /about -> /km/about) — every CMS-backed store (products,
     // solutions, testimonials, site content, etc.) fetches once and caches,
-    // so none of that content re-queries with the new locale on its own.
-    // A full reload is the simplest reliable fix: @nuxtjs/i18n already
-    // persists the choice via the `i18n_redirected` cookie, so the fresh
-    // SSR response comes back correctly localized end-to-end.
-    if (import.meta.client) window.location.reload()
+    // so a client-side-only locale change wouldn't re-query any of that
+    // content in the new language. Landing on the target URL via a full
+    // reload guarantees a correctly localized SSR response end-to-end, and
+    // @nuxtjs/i18n persists the choice via the `i18n_redirected` cookie for
+    // next time.
+    if (import.meta.client) window.location.href = switchLocalePath(code)
   }
 
   return { menuOpen, languages, currentLang, selectLang, locale }

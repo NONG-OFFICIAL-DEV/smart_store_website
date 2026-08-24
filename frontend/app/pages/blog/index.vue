@@ -10,7 +10,7 @@
       <InlineLoader v-if="store.loading" min-height="260px" />
 
       <div v-else-if="store.posts.length" class="hub-grid" data-aos="fade-up">
-        <NuxtLink
+        <NuxtLinkLocale
           v-for="post in store.posts"
           :key="post.id"
           :to="`/blog/${post.slug}`"
@@ -26,7 +26,7 @@
               <Icon name="mdi-arrow-right" size="16" />
             </div>
           </div>
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
 
       <div v-else class="empty-state">

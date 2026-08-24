@@ -77,16 +77,16 @@
         <h4 class="col-heading">{{ t('footer.products_heading') }}</h4>
         <ul class="footer-links">
           <li v-for="product in productsStore.products" :key="product.id">
-            <NuxtLink :to="`/products/${product.slug}`" class="footer-nav-link">
+            <NuxtLinkLocale :to="`/products/${product.slug}`" class="footer-nav-link">
               <span class="link-dot" />
               {{ product.name }}
-            </NuxtLink>
+            </NuxtLinkLocale>
           </li>
           <li>
-            <NuxtLink to="/products" class="footer-nav-link">
+            <NuxtLinkLocale to="/products" class="footer-nav-link">
               <span class="link-dot" />
               {{ t('button.view_all_products') }}
-            </NuxtLink>
+            </NuxtLinkLocale>
           </li>
         </ul>
       </div>
@@ -96,10 +96,10 @@
         <h4 class="col-heading">{{ t('footer.links_heading') }}</h4>
         <ul class="footer-links">
           <li v-for="link in navLinks" :key="link.to">
-            <NuxtLink :to="link.to" class="footer-nav-link">
+            <NuxtLinkLocale :to="link.to" class="footer-nav-link">
               <span class="link-dot" />
               {{ t(link.key) }}
-            </NuxtLink>
+            </NuxtLinkLocale>
           </li>
         </ul>
       </div>
@@ -154,9 +154,9 @@
       <div class="footer-bottom-inner">
         <span class="copy-text">{{ t('footer.copy') }}</span>
         <div class="bottom-links">
-          <a href="/privacy" target="_blank"  class="bottom-link">{{ t('common.privacy_policy') }}</a>
+          <NuxtLinkLocale to="/privacy" target="_blank" class="bottom-link">{{ t('common.privacy_policy') }}</NuxtLinkLocale>
           <span class="bottom-sep">·</span>
-          <a href="/terms" target="_blank" class="bottom-link">{{ t('common.terms_of_service') }}</a>
+          <NuxtLinkLocale to="/terms" target="_blank" class="bottom-link">{{ t('common.terms_of_service') }}</NuxtLinkLocale>
         </div>
       </div>
     </div>

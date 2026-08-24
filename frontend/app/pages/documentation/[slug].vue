@@ -26,13 +26,13 @@
       <!-- ── Center: article ── -->
       <div class="docs-main">
         <nav class="breadcrumb" aria-label="Breadcrumb">
-          <NuxtLink to="/documentation">{{ t('documentation_home.tag') }}</NuxtLink>
+          <NuxtLinkLocale to="/documentation">{{ t('documentation_home.tag') }}</NuxtLinkLocale>
           <template v-if="article.category?.parent">
             <Icon name="mdi-chevron-right" size="14" />
-            <NuxtLink :to="firstArticleLink(article.category.parent)">{{ article.category.parent.name }}</NuxtLink>
+            <NuxtLinkLocale :to="firstArticleLink(article.category.parent)">{{ article.category.parent.name }}</NuxtLinkLocale>
           </template>
           <Icon name="mdi-chevron-right" size="14" />
-          <NuxtLink :to="firstArticleLink(article.category)">{{ article.category?.name }}</NuxtLink>
+          <NuxtLinkLocale :to="firstArticleLink(article.category)">{{ article.category?.name }}</NuxtLinkLocale>
           <Icon name="mdi-chevron-right" size="14" />
           <span class="breadcrumb-current">{{ article.title }}</span>
         </nav>
@@ -60,23 +60,23 @@
         </div>
 
         <div v-if="article.prev || article.next" class="prev-next">
-          <NuxtLink v-if="article.prev" :to="`/documentation/${article.prev.slug}`" class="pn-link pn-link--prev">
+          <NuxtLinkLocale v-if="article.prev" :to="`/documentation/${article.prev.slug}`" class="pn-link pn-link--prev">
             <span class="pn-label">{{ t('documentation_article.previous') }}</span>
             <span class="pn-title"><Icon name="mdi-arrow-left" size="15" /> {{ article.prev.title }}</span>
-          </NuxtLink>
-          <NuxtLink v-if="article.next" :to="`/documentation/${article.next.slug}`" class="pn-link pn-link--next">
+          </NuxtLinkLocale>
+          <NuxtLinkLocale v-if="article.next" :to="`/documentation/${article.next.slug}`" class="pn-link pn-link--next">
             <span class="pn-label">{{ t('documentation_article.next') }}</span>
             <span class="pn-title">{{ article.next.title }} <Icon name="mdi-arrow-right" size="15" /></span>
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
 
         <div v-if="article.related?.length" class="related">
           <h3 class="related-title">{{ t('documentation_article.related_articles') }}</h3>
           <div class="related-grid">
-            <NuxtLink v-for="r in article.related" :key="r.slug" :to="`/documentation/${r.slug}`" class="related-card">
+            <NuxtLinkLocale v-for="r in article.related" :key="r.slug" :to="`/documentation/${r.slug}`" class="related-card">
               <strong class="related-name">{{ r.title }}</strong>
               <p class="related-excerpt">{{ r.excerpt }}</p>
-            </NuxtLink>
+            </NuxtLinkLocale>
           </div>
         </div>
       </div>

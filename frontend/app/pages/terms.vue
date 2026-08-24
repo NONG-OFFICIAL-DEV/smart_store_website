@@ -1,10 +1,10 @@
 <template>
   <div class="legal-page">
     <div class="legal-inner">
-      <NuxtLink to="/" class="back-link">
+      <NuxtLinkLocale to="/" class="back-link">
         <Icon name="mdi-arrow-left" size="16" />
         {{ t('button.back_to_home') }}
-      </NuxtLink>
+      </NuxtLinkLocale>
 
       <div class="legal-header">
         <div class="legal-icon">
@@ -49,9 +49,9 @@
             support@nextstack.app
           </a>
         </p>
-        <NuxtLink to="/privacy" class="link-primary">
+        <NuxtLinkLocale to="/privacy" class="link-primary">
           {{ t('button.view_privacy_policy') }} →
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
     </div>
   </div>

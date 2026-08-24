@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="`/solutions/${solution.slug}`" class="solution-card">
+  <NuxtLinkLocale :to="`/solutions/${solution.slug}`" class="solution-card">
     <div class="card-glow" aria-hidden="true" />
 
     <div class="icon-wrap">
@@ -13,7 +13,7 @@
       <span>{{ t('button.learn_more') }}</span>
       <Icon name="mdi-arrow-right" size="16" />
     </div>
-  </NuxtLink>
+  </NuxtLinkLocale>
 </template>
 
 <script setup lang="ts">

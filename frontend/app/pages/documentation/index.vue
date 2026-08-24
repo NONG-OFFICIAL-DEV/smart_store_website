@@ -26,7 +26,7 @@
           <div v-else-if="!store.searchResults.length" class="no-results">
             {{ t('documentation_home.no_results') }}
           </div>
-          <NuxtLink
+          <NuxtLinkLocale
             v-for="result in store.searchResults"
             :key="result.slug"
             :to="`/documentation/${result.slug}`"
@@ -39,7 +39,7 @@
             </div>
             <h3 class="result-title">{{ result.title }}</h3>
             <p class="result-excerpt">{{ result.excerpt }}</p>
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </template>
 
@@ -54,10 +54,10 @@
             </div>
             <h3 class="product-name">{{ category.name }}</h3>
             <p class="product-desc">{{ category.description }}</p>
-            <NuxtLink :to="firstArticleLink(category)" class="product-cta">
+            <NuxtLinkLocale :to="firstArticleLink(category)" class="product-cta">
               {{ t('documentation_home.view_documentation') }}
               <Icon name="mdi-arrow-right" size="16" />
-            </NuxtLink>
+            </NuxtLinkLocale>
             <a
               v-if="category.product?.demo_video_url"
               :href="category.product.demo_video_url"
@@ -75,10 +75,10 @@
           <h2 class="gs-title">{{ t('documentation_home.getting_started_title') }}</h2>
           <ol class="gs-steps">
             <li v-for="(article, idx) in gettingStarted.articles" :key="article.id">
-              <NuxtLink :to="`/documentation/${article.slug}`" class="gs-step">
+              <NuxtLinkLocale :to="`/documentation/${article.slug}`" class="gs-step">
                 <span class="gs-num">{{ String(idx + 1).padStart(2, '0') }}</span>
                 <span class="gs-text">{{ article.title }}</span>
-              </NuxtLink>
+              </NuxtLinkLocale>
             </li>
           </ol>
         </div>
@@ -86,7 +86,7 @@
         <div v-if="generalCategories.length" class="all-categories" data-aos="fade-up">
           <h2 class="gs-title">{{ t('documentation_home.browse_all') }}</h2>
           <div class="category-grid">
-            <NuxtLink
+            <NuxtLinkLocale
               v-for="category in generalCategories"
               :key="category.id"
               :to="firstArticleLink(category)"
@@ -94,7 +94,7 @@
             >
               <Icon :name="category.icon || 'mdi-folder-outline'" size="18" />
               {{ category.name }}
-            </NuxtLink>
+            </NuxtLinkLocale>
           </div>
         </div>
       </template>

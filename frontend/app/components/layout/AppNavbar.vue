@@ -20,9 +20,9 @@
             :view-all-label="section.viewAllLabel"
             :view-all-to="section.viewAllTo"
           />
-          <NuxtLink v-else :to="section.to" class="nav-link">
+          <NuxtLinkLocale v-else :to="section.to" class="nav-link">
             {{ section.label }}
-          </NuxtLink>
+          </NuxtLinkLocale>
         </template>
       </nav>
 

@@ -1,12 +1,12 @@
 <template>
   <nav class="cat-nav">
     <div v-for="category in categories" :key="category.id" class="cat-group">
-      <NuxtLink :to="firstArticleLink(category)" class="cat-title">
+      <NuxtLinkLocale :to="firstArticleLink(category)" class="cat-title">
         <Icon :name="category.icon || 'mdi-folder-outline'" size="15" />
         {{ category.name }}
-      </NuxtLink>
+      </NuxtLinkLocale>
 
-      <NuxtLink
+      <NuxtLinkLocale
         v-for="article in category.articles"
         :key="article.id"
         :to="`/documentation/${article.slug}`"
@@ -14,13 +14,13 @@
         :class="{ active: article.slug === currentSlug }"
       >
         {{ article.title }}
-      </NuxtLink>
+      </NuxtLinkLocale>
 
       <div v-for="child in category.children" :key="child.id" class="cat-subgroup">
-        <NuxtLink :to="firstArticleLink(child)" class="cat-title cat-title--sub">
+        <NuxtLinkLocale :to="firstArticleLink(child)" class="cat-title cat-title--sub">
           {{ child.name }}
-        </NuxtLink>
-        <NuxtLink
+        </NuxtLinkLocale>
+        <NuxtLinkLocale
           v-for="article in child.articles"
           :key="article.id"
           :to="`/documentation/${article.slug}`"
@@ -28,7 +28,7 @@
           :class="{ active: article.slug === currentSlug }"
         >
           {{ article.title }}
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
     </div>
   </nav>

@@ -56,6 +56,12 @@
 </template>
 
 <script setup lang="ts">
+// Admin is English-only / not part of the public site's i18n surface (auth-
+// gated, zero SEO value, ssr:false) — this stops @nuxtjs/i18n from also
+// generating a /km/admin/... variant of this page (which would otherwise
+// slip past routeRules' '/admin/**' SSR-disable and admin-auth.global.ts's
+// path check, since both match the literal '/admin' prefix).
+defineI18nRoute(false)
   definePageMeta({ layout: 'admin' })
 
   import { Alert, AlertDescription } from '~/components/ui/alert'

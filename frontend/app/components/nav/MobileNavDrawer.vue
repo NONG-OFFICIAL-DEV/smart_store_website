@@ -19,7 +19,7 @@
 
         <nav class="drawer-nav">
           <template v-for="section in sections" :key="section.key">
-            <NuxtLink v-if="section.type === 'link'" :to="section.to" class="drawer-link" @click="close">
+            <NuxtLinkLocale v-if="section.type === 'link'" :to="section.to" class="drawer-link" @click="close">
               {{ section.label }}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +34,7 @@
               >
                 <polyline points="9 18 15 12 9 6" />
               </svg>
-            </NuxtLink>
+            </NuxtLinkLocale>
 
             <div v-else class="drawer-group">
               <button class="drawer-link drawer-group-trigger" @click="toggleSection(section.key)">
@@ -57,7 +57,7 @@
               </button>
 
               <div v-if="openSections[section.key]" class="drawer-subitems">
-                <NuxtLink
+                <NuxtLinkLocale
                   v-for="item in section.items"
                   :key="item.to"
                   :to="item.to"
@@ -66,10 +66,10 @@
                 >
                   <Icon v-if="item.icon" :name="item.icon" size="16" />
                   {{ item.label }}
-                </NuxtLink>
-                <NuxtLink v-if="section.viewAllTo" :to="section.viewAllTo" class="drawer-subitem drawer-view-all" @click="close">
+                </NuxtLinkLocale>
+                <NuxtLinkLocale v-if="section.viewAllTo" :to="section.viewAllTo" class="drawer-subitem drawer-view-all" @click="close">
                   {{ section.viewAllLabel }}
-                </NuxtLink>
+                </NuxtLinkLocale>
               </div>
             </div>
           </template>
@@ -113,10 +113,10 @@
           <Switch :model-value="isDark" @update:model-value="toggleTheme" />
         </div>
 
-        <NuxtLink to="/login" class="drawer-login" @click="close">
+        <NuxtLinkLocale to="/login" class="drawer-login" @click="close">
           {{ t('button.log_in') }}
-        </NuxtLink>
-        <NuxtLink to="/get-started" class="drawer-cta" @click="close">
+        </NuxtLinkLocale>
+        <NuxtLinkLocale to="/get-started" class="drawer-cta" @click="close">
           {{ t('button.get_started') }}
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +132,7 @@
             <line x1="5" y1="12" x2="19" y2="12" />
             <polyline points="12 5 19 12 12 19" />
           </svg>
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
     </Transition>
   </Teleport>

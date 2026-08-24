@@ -23,7 +23,7 @@
           <h3 class="product-name">{{ product.name }}</h3>
           <p class="product-tagline">{{ product.tagline || product.summary }}</p>
           <component
-            :is="linkFor(product).href ? 'a' : NuxtLink"
+            :is="linkFor(product).href ? 'a' : NuxtLinkLocale"
             v-bind="linkFor(product)"
             class="choice-cta"
           >
@@ -34,16 +34,16 @@
       </div>
 
       <div class="explore-more text-center" data-aos="fade-up">
-        <NuxtLink to="/products" class="explore-link">
+        <NuxtLinkLocale to="/products" class="explore-link">
           {{ t('get_started_page.explore_more') }}
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
     </Container>
   </section>
 </template>
 
 <script setup lang="ts">
-  import { NuxtLink } from '#components'
+  import { NuxtLinkLocale } from '#components'
   import type { Product } from '~/types'
 
   const { t } = useI18n()

@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink
+  <NuxtLinkLocale
     :to="`/products/${product.slug}`"
     class="product-card"
     :style="{ '--accent': product.accent_color || '#6366F1' }"
@@ -30,7 +30,7 @@
       <span>{{ t('button.learn_more') }}</span>
       <Icon name="mdi-arrow-right" size="16" />
     </div>
-  </NuxtLink>
+  </NuxtLinkLocale>
 </template>
 
 <script setup lang="ts">

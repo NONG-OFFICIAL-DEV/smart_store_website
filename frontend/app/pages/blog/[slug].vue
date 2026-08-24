@@ -18,9 +18,9 @@
     <section class="section-pad hero">
       <Container>
         <div class="hero-inner">
-          <NuxtLink to="/blog" class="back-link">
+          <NuxtLinkLocale to="/blog" class="back-link">
             <Icon name="mdi-arrow-left" size="16" /> {{ t('blog_detail.back_to_blog') }}
-          </NuxtLink>
+          </NuxtLinkLocale>
           <div class="post-meta">
             <span v-if="post.author_name">{{ post.author_name }}</span>
             <span v-if="post.author_name && post.published_at">·</span>

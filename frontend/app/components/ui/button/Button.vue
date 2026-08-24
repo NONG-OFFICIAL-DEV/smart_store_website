@@ -3,7 +3,7 @@ import type { PrimitiveProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import type { ButtonVariants } from '.'
 import { computed } from 'vue'
-import { NuxtLink } from '#components'
+import { NuxtLinkLocale } from '#components'
 import { Primitive } from 'reka-ui'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '.'
@@ -25,8 +25,11 @@ const props = withDefaults(defineProps<Props>(), {
 // real link component. NuxtLink isn't a runtime-registered global
 // component (Nuxt's auto-import splices it into each file at compile
 // time), so resolveDynamicComponent() can't find it either — it has to
-// be mapped to the actual imported component explicitly.
-const resolvedAs = computed(() => (props.as === 'NuxtLink' ? NuxtLink : props.as))
+// be mapped to the actual imported component explicitly. Resolves to
+// NuxtLinkLocale (not plain NuxtLink) so every `as="NuxtLink"` call site
+// automatically gets locale-aware routing (/km/... prefix) for free —
+// @nuxtjs/i18n doesn't patch NuxtLink itself, only this wrapper.
+const resolvedAs = computed(() => (props.as === 'NuxtLink' ? NuxtLinkLocale : props.as))
 </script>
 
 <template>

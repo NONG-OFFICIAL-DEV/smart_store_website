@@ -26,18 +26,18 @@
 
     <Transition name="dropdown-fade">
       <div v-if="isOpen" class="nav-dropdown-panel" @click="close">
-        <NuxtLink v-for="item in items" :key="item.to" :to="item.to" class="dropdown-item">
+        <NuxtLinkLocale v-for="item in items" :key="item.to" :to="item.to" class="dropdown-item">
           <Icon v-if="item.icon" :name="item.icon" size="18" class="dropdown-item-icon" />
           <span class="dropdown-item-text">
             <span class="dropdown-item-label">{{ item.label }}</span>
             <span v-if="item.description" class="dropdown-item-desc">{{ item.description }}</span>
           </span>
-        </NuxtLink>
+        </NuxtLinkLocale>
 
-        <NuxtLink v-if="viewAllTo" :to="viewAllTo" class="dropdown-view-all">
+        <NuxtLinkLocale v-if="viewAllTo" :to="viewAllTo" class="dropdown-view-all">
           {{ viewAllLabel }}
           <Icon name="mdi-arrow-right" size="14" />
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
     </Transition>
   </div>

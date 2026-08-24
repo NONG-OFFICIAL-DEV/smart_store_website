@@ -20,29 +20,23 @@ const notifRef = ref<InstanceType<typeof Notif> | null>(null)
 const confirmRef = ref<InstanceType<typeof Confirm> | null>(null)
 
 const instance = getCurrentInstance()!
-const { t, locale, setLocale } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
+const switchLocalePath = useSwitchLocalePath()
 
-// Link-preview crawlers (Telegram/Facebook/etc.) fetch pages with no cookies
-// and never run client JS, so they always see whatever locale SSR rendered
-// first — normally always `defaultLocale` ('en'), since the saved language
-// preference lives in localStorage (client-only, read in onMounted below).
-// A `?lang=km` query param lets a specific shared link render Khmer during
-// SSR itself, so its OG/meta tags (and the page) come through in Khmer.
-const queryLang = route.query.lang
-const hasQueryLangOverride = queryLang === 'km' || queryLang === 'en'
-if (hasQueryLangOverride && queryLang !== locale.value) {
-  await setLocale(queryLang)
-}
-
-// Mirrors `site.url` in nuxt.config.ts — kept as a plain constant here since
-// there's no site-config composable already wired up in this app to read it from.
+// Mirrors `site.url`/`i18n.baseUrl` in nuxt.config.ts — kept as a plain
+// constant here since there's no site-config composable already wired up
+// in this app to read it from.
 const siteUrl = 'https://www.nexstacktech.com'
 const ogImageUrl = `${siteUrl}/og/website.png`
 
 // Global fallback — per-page useSeoMeta() calls (see products/[slug].vue,
 // blog/[slug].vue, etc.) override title/description with page-specific
-// copy; this only applies where a page doesn't set its own.
+// copy; this only applies where a page doesn't set its own. `locale`/`t()`
+// now come straight from the matched route (English at /about, Khmer at
+// /km/about — see nuxt.config.ts's `i18n.strategy`), so a link-preview
+// crawler fetching either URL gets that URL's own correct-language OG tags
+// with no cookies/JS required.
 useSeoMeta({
   title: () => t('meta.title'),
   description: () => t('meta.description'),
@@ -60,25 +54,34 @@ useSeoMeta({
   twitterDescription: () => t('meta.description'),
   twitterImage: ogImageUrl,
 })
+
 // Sets <html class="dark"> during SSR itself (cookie is readable on the
 // server, unlike localStorage) — see useColorMode.ts for why this replaces
-// Vuetify's useTheme().
+// Vuetify's useTheme(). htmlAttrs.lang/dir and the hreflang <link
+// rel="alternate"> tags come from useLocaleHead(), driven by the matched
+// route's own locale — no manual lang-detection logic needed here anymore.
 const { isDark } = useColorMode()
-useHead({
+const i18nHead = useLocaleHead()
+useHead(() => ({
   htmlAttrs: {
-    class: computed(() => (isDark.value ? 'dark' : ''))
-  }
-})
+    ...i18nHead.value.htmlAttrs,
+    class: isDark.value ? 'dark' : ''
+  },
+  link: [...(i18nHead.value.link || [])],
+  meta: [...(i18nHead.value.meta || [])]
+}))
 
 // Keyboard switcher
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.shiftKey && e.ctrlKey && e.key === 'L') {
     e.preventDefault()
     const newLocale = locale.value === 'en' ? 'km' : 'en'
-    // setLocale() (not locale.value = ...) — required to trigger the
-    // lazy-loaded locale messages import; see useLanguageSwitcher.ts.
-    setLocale(newLocale)
-    localStorage.setItem('lang', newLocale)
+    // Hard navigation to the target locale's own URL — see
+    // useLanguageSwitcher.ts's selectLang() for why (CMS-backed stores
+    // fetch once and cache, so a client-side-only change wouldn't
+    // re-resolve them; landing on that locale's real URL via a full
+    // reload guarantees a correctly localized SSR response end-to-end).
+    window.location.href = switchLocalePath(newLocale)
   }
 }
 
@@ -88,12 +91,6 @@ onMounted(() => {
   // Register global methods for both Options and Composition APIs
   app.config.globalProperties.$notif = notifRef.value?.newAlert
   app.config.globalProperties.$confirm = confirmRef.value?.open
-
-  // Restore saved language preference
-  const savedLang = localStorage.getItem('lang')
-  if (savedLang === 'en' || savedLang === 'km') {
-    setLocale(savedLang)
-  }
 
   // Bind keyboard event
   document.addEventListener('keydown', handleKeyDown)

@@ -68,6 +68,8 @@
 </template>
 
 <script setup lang="ts">
+// See pages/admin/index.vue for why every admin page opts out of i18n routing.
+defineI18nRoute(false)
   import { Alert, AlertDescription } from '~/components/ui/alert'
   import { Avatar, AvatarFallback } from '~/components/ui/avatar'
   import { Button } from '~/components/ui/button'

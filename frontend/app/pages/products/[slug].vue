@@ -209,8 +209,9 @@ function scrollToCta() {
 
 // Hands off to this site's own onboarding wizard, which calls Studio's
 // real registration API server-side, carrying the chosen plan through.
+const localePath = useLocalePath()
 function goToStudioRegister(planCode?: string) {
-  navigateTo({ path: '/onboarding/studio-management', query: planCode ? { plan: planCode } : {} })
+  navigateTo(localePath({ path: '/onboarding/studio-management', query: planCode ? { plan: planCode } : {} }))
 }
 </script>
 

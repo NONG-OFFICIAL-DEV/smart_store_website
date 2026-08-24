@@ -94,7 +94,15 @@ export default defineNuxtConfig({
       { code: 'km', file: 'km.json', name: 'Khmer' }
     ],
     defaultLocale: 'en',
-    strategy: 'no_prefix',
-    langDir: 'locales'
+    // English keeps today's bare URLs (/about); only Khmer gets a /km prefix
+    // (/km/about) — existing links/bookmarks/SEO for English pages don't
+    // change. This also makes each URL deterministically one language, which
+    // is what makes locale-correct OG/link previews possible (a crawler
+    // fetching a URL with no cookies/JS always gets the right language).
+    strategy: 'prefix_except_default',
+    langDir: 'locales',
+    // Needed for correct absolute canonical/hreflang URLs (useLocaleHead()
+    // in app.vue) — same domain as `site.url` above.
+    baseUrl: 'https://www.nexstacktech.com'
   }
 })

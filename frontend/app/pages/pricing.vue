@@ -285,8 +285,9 @@
 
   // Same hand-off as pages/products/[slug].vue's goToStudioRegister — this
   // site's onboarding wizard, which calls Studio's real registration API.
+  const localePath = useLocalePath()
   function goToStudioRegister(planCode?: string) {
-    navigateTo({ path: '/onboarding/studio-management', query: planCode ? { plan: planCode } : {} })
+    navigateTo(localePath({ path: '/onboarding/studio-management', query: planCode ? { plan: planCode } : {} }))
   }
 </script>
 

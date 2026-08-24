@@ -149,8 +149,9 @@
     }))
   }
 
+  const localePath = useLocalePath()
   function goToRegister() {
-    navigateTo('/onboarding/nexstack-pos')
+    navigateTo(localePath('/onboarding/nexstack-pos'))
   }
 
   // Awaited (not onMounted) so live pricing is present in the server-rendered

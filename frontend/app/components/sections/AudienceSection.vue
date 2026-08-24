@@ -31,10 +31,10 @@
         </div>
       </div>
 
-      <NuxtLink to="/solutions" class="see-all-link" data-aos="fade-up">
+      <NuxtLinkLocale to="/solutions" class="see-all-link" data-aos="fade-up">
         {{ t('menu.view_all_solutions') }}
         <Icon name="mdi-arrow-right" size="16" />
-      </NuxtLink>
+      </NuxtLinkLocale>
     </Container>
   </section>
 </template>

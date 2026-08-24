@@ -11,14 +11,14 @@
         <Icon name="mdi-send-outline" size="18" />
         <span class="dock-label">{{ t('button.chat_telegram') }}</span>
       </a>
-      <NuxtLink
+      <NuxtLinkLocale
         to="/get-started"
         class="dock-btn dock-btn--demo"
         :aria-label="t('button.start_free_trial')"
       >
         <Icon name="mdi-rocket-launch-outline" size="18" />
         <span class="dock-label">{{ t('button.start_free_trial') }}</span>
-      </NuxtLink>
+      </NuxtLinkLocale>
     </div>
   </Transition>
 </template>

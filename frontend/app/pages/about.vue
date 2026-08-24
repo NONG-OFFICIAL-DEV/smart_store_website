@@ -16,7 +16,7 @@
               {{ about.hero_cta_primary_label }}
               <Icon name="mdi-arrow-right" size="18" />
             </Button>
-            <Button as="a" variant="outline" href="/contact">
+            <Button as="NuxtLink" variant="outline" to="/contact">
               <Icon name="mdi-email-outline" size="18" />
               {{ about.hero_cta_secondary_label }}
             </Button>
