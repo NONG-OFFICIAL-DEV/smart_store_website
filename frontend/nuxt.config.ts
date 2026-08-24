@@ -101,6 +101,15 @@ export default defineNuxtConfig({
     // fetching a URL with no cookies/JS always gets the right language).
     strategy: 'prefix_except_default',
     langDir: 'locales',
+    // Default is `{ redirectOn: 'root', useCookie: true }` — that makes '/'
+    // check the `i18n_redirected` cookie and redirect to whatever locale it
+    // remembers, every visit. That fights the app's own explicit language
+    // switcher directly: once the cookie says 'km', navigating to '/' (to
+    // switch back to English) gets immediately bounced back to /km before
+    // the switch is ever seen. Disabled outright — this app already has its
+    // own explicit switcher; deterministic URL -> deterministic locale (no
+    // auto-redirect surprises) is also what makes OG/link previews correct.
+    detectBrowserLanguage: false,
     // Needed for correct absolute canonical/hreflang URLs (useLocaleHead()
     // in app.vue) — same domain as `site.url` above.
     baseUrl: 'https://www.nexstacktech.com'
