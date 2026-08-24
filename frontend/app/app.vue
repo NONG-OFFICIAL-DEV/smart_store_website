@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+
 import Notif from '~/components/global/Notification.vue'
 import Confirm from '~/components/global/Confirm.vue'
 import Loading from '~/components/global/Loading.vue'
@@ -19,8 +20,38 @@ const notifRef = ref<InstanceType<typeof Notif> | null>(null)
 const confirmRef = ref<InstanceType<typeof Confirm> | null>(null)
 
 const instance = getCurrentInstance()!
-const { locale, setLocale } = useI18n()
+const { t, locale, setLocale } = useI18n()
+const route = useRoute()
 
+// Mirrors `site.url` in nuxt.config.ts — kept as a plain constant here since
+// there's no site-config composable already wired up in this app to read it from.
+const siteUrl = 'https://www.nexstacktech.com'
+// No dedicated 1200x630 OG banner exists yet — icon.png is the closest real
+// asset (near-square, so it survives social platforms' auto-cropping better
+// than the wide wordmark logo would). Swap this for a purpose-built banner
+// image later if one gets designed.
+const ogImageUrl = `${siteUrl}/icon.png`
+
+// Global fallback — per-page useSeoMeta() calls (see products/[slug].vue,
+// blog/[slug].vue, etc.) override title/description with page-specific
+// copy; this only applies where a page doesn't set its own.
+useSeoMeta({
+  title: () => t('meta.title'),
+  description: () => t('meta.description'),
+
+  ogTitle: () => t('meta.og_title'),
+  ogDescription: () => t('meta.description'),
+  ogType: 'website',
+  ogUrl: () => `${siteUrl}${route.path}`,
+  ogImage: ogImageUrl,
+  ogImageWidth: '1069',
+  ogImageHeight: '1069',
+
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => t('meta.og_title'),
+  twitterDescription: () => t('meta.description'),
+  twitterImage: ogImageUrl,
+})
 // Sets <html class="dark"> during SSR itself (cookie is readable on the
 // server, unlike localStorage) — see useColorMode.ts for why this replaces
 // Vuetify's useTheme().

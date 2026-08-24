@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "title": "Nexstack",
+    "og_title": "Nexstack — Smart SaaS Solutions for Business",
+    "description": "Boost your business efficiency with intuitive SaaS tools—crafted, built, and personally supported to help your business thrive."
+  },
   "common": {
     "language": "Language",
     "lang_en": "English",

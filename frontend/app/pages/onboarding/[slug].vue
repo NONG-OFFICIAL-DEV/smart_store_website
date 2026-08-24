@@ -53,7 +53,7 @@
                 <SelectTrigger class="w-full" :disabled="loadingBusinessTypes" :class="fieldError('business_type_id') ? 'border-destructive' : ''">
                   <SelectValue :placeholder="t('onboarding.business_type')" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper" :body-lock="false">
                   <SelectItem v-for="bt in businessTypes" :key="bt.id" :value="bt.id">{{ bt.name }}</SelectItem>
                 </SelectContent>
               </Select>
