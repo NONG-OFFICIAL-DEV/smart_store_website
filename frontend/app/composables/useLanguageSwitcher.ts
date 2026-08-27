@@ -1,6 +1,6 @@
 // app/composables/useLanguageSwitcher.ts
 interface LanguageOption {
-  code: string
+  code: 'en' | 'km'
   label: string
   imgSrc: string
   alt: string
@@ -29,7 +29,7 @@ export function useLanguageSwitcher() {
 
   const currentLang = computed(() => languages.value.find((l) => l.code === locale.value) ?? languages.value[0]!)
 
-  function selectLang(code: string) {
+  function selectLang(code: 'en' | 'km') {
     if (code === locale.value) {
       menuOpen.value = false
       return

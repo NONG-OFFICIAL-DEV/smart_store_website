@@ -90,8 +90,8 @@ export default defineNuxtConfig({
 
   i18n: {
     locales: [
-      { code: 'en', file: 'en.json', name: 'English' },
-      { code: 'km', file: 'km.json', name: 'Khmer' }
+      { code: 'en', file: 'en.json', name: 'English', language: 'en-US' },
+      { code: 'km', file: 'km.json', name: 'Khmer', language: 'km-KH' }
     ],
     defaultLocale: 'en',
     // English keeps today's bare URLs (/about); only Khmer gets a /km prefix

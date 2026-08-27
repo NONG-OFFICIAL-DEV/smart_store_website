@@ -153,7 +153,7 @@ const { sections } = useNavSections();
 const mobileOpen = ref(false);
 const isScrolled = ref(false);
 
-function onSelectLang(code: string) {
+function onSelectLang(code: "en" | "km") {
   selectLang(code);
   mobileOpen.value = false;
 }
