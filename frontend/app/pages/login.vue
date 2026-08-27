@@ -14,6 +14,8 @@
           v-for="product in loginableProducts"
           :key="product.id"
           :href="getLoginLink(product.slug) ?? undefined"
+          target="_blank"
+          rel="noopener noreferrer"
           class="product-choice-card"
           :style="{ '--accent': product.accent_color || '#6366F1' }"
         >
