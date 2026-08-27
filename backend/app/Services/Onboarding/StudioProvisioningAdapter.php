@@ -26,6 +26,7 @@ class StudioProvisioningAdapter
                 'password' => $data['password'],
                 'password_confirmation' => $data['password_confirmation'] ?? $data['password'],
                 'plan_code' => $data['plan_code'] ?? null,
+                'billing_cycle' => $data['billing_cycle'] ?? null,
             ]);
         } catch (ConnectionException) {
             return [

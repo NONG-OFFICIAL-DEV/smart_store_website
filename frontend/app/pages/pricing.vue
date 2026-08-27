@@ -120,7 +120,7 @@
                 <Button
                   :variant="plan.code === 'professional' ? 'default' : 'outline'"
                   class="plan-cta w-full"
-                  @click="goToStudioRegister(plan.code)"
+                  @click="goToStudioRegister(plan.code, studioIsFree(plan) ? undefined : studioCycleCode)"
                 >
                   {{ studioIsFree(plan) ? t('button.start_free_trial') : t('button.get_started') }}
                   <Icon name="mdi-arrow-right" size="16" />
@@ -211,11 +211,15 @@
   })
 
   // ── Studio Management ────────────────────────────────────────────────
+  // `code` matches Studio's own BillingCycle enum values exactly, same as
+  // StudioPriceSection.vue's CYCLES — this is what actually gets sent
+  // through onboarding to Studio's /register endpoint.
   const STUDIO_CYCLES = [
-    { months: 1, labelKey: 'studio_pricing.monthly' },
-    { months: 3, labelKey: 'studio_pricing.quarterly' },
-    { months: 12, labelKey: 'studio_pricing.yearly' }
+    { months: 1, code: 'monthly', labelKey: 'studio_pricing.monthly' },
+    { months: 3, code: 'quarterly', labelKey: 'studio_pricing.quarterly' },
+    { months: 12, code: 'yearly', labelKey: 'studio_pricing.yearly' }
   ]
+  const studioCycleCode = computed(() => STUDIO_CYCLES.find((c) => c.months === selectedMonths.value)?.code ?? 'monthly')
   const studioHasPaidPlans = computed(() => studioStore.plans.some((p) => Number(p.price_monthly) > 0))
   const studioIsFree = (plan: StudioPlan) => Number(plan.price_monthly) === 0
   function studioTotalForCycle(plan: StudioPlan, months: number) {
@@ -286,8 +290,11 @@
   // Same hand-off as pages/products/[slug].vue's goToStudioRegister — this
   // site's onboarding wizard, which calls Studio's real registration API.
   const localePath = useLocalePath()
-  function goToStudioRegister(planCode?: string) {
-    navigateTo(localePath({ path: '/onboarding/studio-management', query: planCode ? { plan: planCode } : {} }))
+  function goToStudioRegister(planCode?: string, billingCycle?: string) {
+    const query: Record<string, string> = {}
+    if (planCode) query.plan = planCode
+    if (billingCycle) query.cycle = billingCycle
+    navigateTo(localePath({ path: '/onboarding/studio-management', query }))
   }
 </script>
 

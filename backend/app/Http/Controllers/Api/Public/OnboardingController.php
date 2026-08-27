@@ -59,6 +59,7 @@ class OnboardingController extends Controller
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'plan_code' => $data['plan_code'] ?? null,
+            'billing_cycle' => $data['billing_cycle'] ?? null,
             'status' => $result['success'] ? 'success' : 'failed',
             'error_message' => $result['success'] ? null : ($result['message'] ?? null),
         ]);

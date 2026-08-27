@@ -93,7 +93,7 @@
           <Button
             :variant="plan.code === 'professional' ? 'default' : 'outline'"
             class="plan-cta w-full"
-            @click="emit('select-plan', plan.code)"
+            @click="emit('select-plan', plan.code, isFree(plan) ? undefined : cycleCode)"
           >
             {{ isFree(plan) ? t('button.start_free_trial') : t('button.get_started') }}
             <Icon name="mdi-arrow-right" size="16" />
@@ -113,7 +113,9 @@
   const { t } = useI18n()
   const store = useStudioPlansStore()
 
-  const emit = defineEmits<{ 'select-plan': [code: string] }>()
+  // billingCycle is omitted (undefined) for the free trial plan — a cycle
+  // is meaningless for a trial signup, so it's never sent for that button.
+  const emit = defineEmits<{ 'select-plan': [code: string, billingCycle?: string] }>()
 
   // Awaited (not onMounted) so live pricing is present in the server-rendered
   // HTML instead of flashing an empty grid/spinner before a client-only fetch
@@ -121,12 +123,16 @@
   // are cached, so this only ever does real work on first load.
   await useAsyncData('studio-plans', () => store.fetchPlans())
 
+  // `code` matches Studio's own BillingCycle enum values exactly
+  // (backend/app/Enums/BillingCycle.php) — this is what actually gets sent
+  // through onboarding to Studio's /register endpoint, not just a display label.
   const CYCLES = [
-    { months: 1, labelKey: 'studio_pricing.monthly' },
-    { months: 3, labelKey: 'studio_pricing.quarterly' },
-    { months: 12, labelKey: 'studio_pricing.yearly' }
+    { months: 1, code: 'monthly', labelKey: 'studio_pricing.monthly' },
+    { months: 3, code: 'quarterly', labelKey: 'studio_pricing.quarterly' },
+    { months: 12, code: 'yearly', labelKey: 'studio_pricing.yearly' }
   ]
   const selectedMonths = ref(1)
+  const cycleCode = computed(() => CYCLES.find((c) => c.months === selectedMonths.value)?.code ?? 'monthly')
 
   const hasPaidPlans = computed(() => store.plans.some((p) => Number(p.price_monthly) > 0))
 

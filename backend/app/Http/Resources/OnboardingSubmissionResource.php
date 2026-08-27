@@ -18,6 +18,7 @@ class OnboardingSubmissionResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'plan_code' => $this->plan_code,
+            'billing_cycle' => $this->billing_cycle,
             'status' => $this->status,
             'error_message' => $this->error_message,
             'created_at' => $this->created_at,

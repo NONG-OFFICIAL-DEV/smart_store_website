@@ -228,6 +228,7 @@
       const result = await provisionOnboarding({
         product_slug: slug.value,
         plan_code: route.query.plan || null,
+        billing_cycle: route.query.cycle || null,
         business_name: form.business_name,
         business_type_id: form.business_type_id,
         owner_first_name: form.owner_first_name,
