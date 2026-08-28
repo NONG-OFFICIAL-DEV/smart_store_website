@@ -110,7 +110,7 @@
   import { Button } from '~/components/ui/button'
   import type { StudioPlan } from '~/types'
 
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const store = useStudioPlansStore()
 
   // billingCycle is omitted (undefined) for the free trial plan — a cycle
@@ -158,28 +158,21 @@
     return Math.round((1 - perMonthAtCycle / monthly) * 100)
   }
 
+  // Only dimensions the Studio admin has set a feature_labels entry for are
+  // shown — no static i18n text is used as a fallback anymore. Numeric
+  // dimensions show regardless of value (their label already communicates
+  // the count/unlimited state); boolean dimensions only show when enabled.
+  const STUDIO_FEATURE_KEYS = ['max_users', 'storage_limit_gb', 'monthly_order_limit'] as const
+  const STUDIO_BOOLEAN_FEATURE_KEYS = ['has_online_gallery', 'has_reports', 'has_telegram', 'has_api_access'] as const
+
   function planFeatures(plan: StudioPlan) {
-    const items: string[] = []
-    items.push(
-      plan.max_users
-        ? t('studio_pricing.feature_users', { n: plan.max_users })
-        : t('studio_pricing.feature_users_unlimited')
-    )
-    items.push(
-      plan.storage_limit_gb
-        ? t('studio_pricing.feature_storage', { n: plan.storage_limit_gb })
-        : t('studio_pricing.feature_storage_unlimited')
-    )
-    items.push(
-      plan.monthly_order_limit
-        ? t('studio_pricing.feature_orders', { n: plan.monthly_order_limit })
-        : t('studio_pricing.feature_orders_unlimited')
-    )
-    if (plan.has_online_gallery) items.push(t('studio_pricing.feature_online_gallery'))
-    if (plan.has_reports) items.push(t('studio_pricing.feature_reports'))
-    if (plan.has_telegram) items.push(t('studio_pricing.feature_telegram'))
-    if (plan.has_api_access) items.push(t('studio_pricing.feature_api'))
-    return items
+    const keys: string[] = [
+      ...STUDIO_FEATURE_KEYS,
+      ...STUDIO_BOOLEAN_FEATURE_KEYS.filter((key) => plan[key])
+    ]
+    return keys
+      .map((key) => studioFeatureLabel(plan, key, locale.value))
+      .filter((label): label is string => !!label)
   }
 </script>
 

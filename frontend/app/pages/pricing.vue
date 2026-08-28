@@ -238,51 +238,47 @@
     const perMonthAtCycle = studioTotalForCycle(referencePlan, months) / months
     return Math.round((1 - perMonthAtCycle / monthly) * 100)
   }
+  // Only dimensions the Studio admin has set a feature_labels entry for are
+  // shown — no static i18n text is used as a fallback anymore. Numeric
+  // dimensions show regardless of value (their label already communicates
+  // the count/unlimited state); boolean dimensions only show when enabled.
+  const STUDIO_FEATURE_KEYS = ['max_users', 'storage_limit_gb', 'monthly_order_limit'] as const
+  const STUDIO_BOOLEAN_FEATURE_KEYS = ['has_online_gallery', 'has_reports', 'has_telegram', 'has_api_access'] as const
+
   function studioAllFeatures(plan: StudioPlan): string[] {
-    const items: string[] = []
-    items.push(
-      plan.max_users ? t('studio_pricing.feature_users', { n: plan.max_users }) : t('studio_pricing.feature_users_unlimited')
-    )
-    items.push(
-      plan.storage_limit_gb
-        ? t('studio_pricing.feature_storage', { n: plan.storage_limit_gb })
-        : t('studio_pricing.feature_storage_unlimited')
-    )
-    items.push(
-      plan.monthly_order_limit
-        ? t('studio_pricing.feature_orders', { n: plan.monthly_order_limit })
-        : t('studio_pricing.feature_orders_unlimited')
-    )
-    if (plan.has_online_gallery) items.push(t('studio_pricing.feature_online_gallery'))
-    if (plan.has_reports) items.push(t('studio_pricing.feature_reports'))
-    if (plan.has_telegram) items.push(t('studio_pricing.feature_telegram'))
-    if (plan.has_api_access) items.push(t('studio_pricing.feature_api'))
-    return items
+    const keys: string[] = [
+      ...STUDIO_FEATURE_KEYS,
+      ...STUDIO_BOOLEAN_FEATURE_KEYS.filter((key) => plan[key])
+    ]
+    return keys
+      .map((key) => studioFeatureLabel(plan, key, locale.value))
+      .filter((label): label is string => !!label)
   }
   const studioTopFeatures = (plan: StudioPlan) => studioAllFeatures(plan).slice(0, 7)
 
-  const studioFeatureRows = computed(() => {
-    const rows: { label: string; values: Record<string, string | boolean> }[] = [
-      { label: t('pricing_hub.row_users'), values: {} },
-      { label: t('pricing_hub.row_storage'), values: {} },
-      { label: t('pricing_hub.row_orders'), values: {} },
-      { label: t('studio_pricing.feature_online_gallery'), values: {} },
-      { label: t('studio_pricing.feature_reports'), values: {} },
-      { label: t('studio_pricing.feature_telegram'), values: {} },
-      { label: t('studio_pricing.feature_api'), values: {} }
-    ]
+  // A row's own heading text also comes from feature_labels (no static i18n
+  // key survives to name it) — taken from whichever plan first has a label
+  // for that dimension. A dimension no plan has labeled yet is dropped
+  // entirely rather than shown with a blank/guessed heading.
+  function firstStudioFeatureLabel(key: string): string | null {
     for (const plan of studioStore.plans) {
-      rows[0]!.values[plan.code] = plan.max_users ? String(plan.max_users) : t('studio_pricing.feature_users_unlimited')
-      rows[1]!.values[plan.code] = plan.storage_limit_gb
-        ? `${plan.storage_limit_gb} GB`
-        : t('studio_pricing.feature_storage_unlimited')
-      rows[2]!.values[plan.code] = plan.monthly_order_limit
-        ? String(plan.monthly_order_limit)
-        : t('studio_pricing.feature_orders_unlimited')
-      rows[3]!.values[plan.code] = !!plan.has_online_gallery
-      rows[4]!.values[plan.code] = !!plan.has_reports
-      rows[5]!.values[plan.code] = !!plan.has_telegram
-      rows[6]!.values[plan.code] = !!plan.has_api_access
+      const label = studioFeatureLabel(plan, key, locale.value)
+      if (label) return label
+    }
+    return null
+  }
+
+  const studioFeatureRows = computed(() => {
+    const rows: { label: string; values: Record<string, string | boolean> }[] = []
+    for (const key of [...STUDIO_FEATURE_KEYS, ...STUDIO_BOOLEAN_FEATURE_KEYS]) {
+      const label = firstStudioFeatureLabel(key)
+      if (!label) continue
+      const isBoolean = (STUDIO_BOOLEAN_FEATURE_KEYS as readonly string[]).includes(key)
+      const values: Record<string, string | boolean> = {}
+      for (const plan of studioStore.plans) {
+        values[plan.code] = isBoolean ? !!plan[key as keyof StudioPlan] : studioFeatureLabel(plan, key, locale.value) ?? ''
+      }
+      rows.push({ label, values })
     }
     return rows
   })

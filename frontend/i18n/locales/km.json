@@ -194,17 +194,7 @@
     "quarterly": "ប្រចាំត្រីមាស",
     "yearly": "ប្រចាំឆ្នាំ",
     "unavailable": "តម្លៃមិនអាចប្រើបានជាបណ្តោះអាសន្ន — សូមពិនិត្យមើលឡើងវិញឆាប់ៗនេះ។",
-    "trial_days": "សាកល្បងឥតគិតថ្លៃ {days} ថ្ងៃ",
-    "feature_users": "អ្នកប្រើប្រាស់រហូតដល់ {n}",
-    "feature_users_unlimited": "អ្នកប្រើប្រាស់គ្មានកំណត់",
-    "feature_storage": "ទំហំផ្ទុក {n} GB",
-    "feature_storage_unlimited": "ទំហំផ្ទុកគ្មានកំណត់",
-    "feature_orders": "ការកម្មង់ {n} / ខែ",
-    "feature_orders_unlimited": "ការកម្មង់គ្មានកំណត់",
-    "feature_online_gallery": "វិចិត្រសាលអតិថិជនអនឡាញ",
-    "feature_reports": "របាយការណ៍ និងវិភាគទិន្នន័យ",
-    "feature_telegram": "ការជូនដំណឹងតាម Telegram",
-    "feature_api": "ការចូលប្រើ API"
+    "trial_days": "សាកល្បងឥតគិតថ្លៃ {days} ថ្ងៃ"
   },
   "footer": {
     "products_heading": "ផលិតផល",

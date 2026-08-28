@@ -392,4 +392,9 @@ export interface StudioPlan {
   has_reports?: boolean
   has_telegram?: boolean
   has_api_access?: boolean
+  // Admin-set per-plan, per-locale overrides for any feature dimension's
+  // display label (e.g. `{ max_users: { en: 'Up to 2 users', km: '...' } }`)
+  // — only present for dimensions the admin has customized, see
+  // utils/studioPlanFeatures.ts's studioFeatureLabel() for the fallback rule.
+  feature_labels?: Record<string, { en: string; km?: string }>
 }
