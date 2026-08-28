@@ -15,7 +15,17 @@
         <div class="product-selector-wrap" data-aos="fade-up">
           <Tabs v-model="activeSlug">
             <TabsList class="product-selector">
-              <TabsTrigger v-for="p in tabs" :key="p.slug" :value="p.slug">
+              <TabsTrigger
+                v-for="p in tabs"
+                :key="p.slug"
+                :value="p.slug"
+                class="product-selector-trigger"
+                :style="{ '--accent': p.accent_color || '#6366F1' }"
+              >
+                <span class="trigger-logo">
+                  <img v-if="p.logo_url" :src="p.logo_url" :alt="p.name" />
+                  <Icon v-else name="mdi-apps" size="14" />
+                </span>
                 {{ p.name }}
               </TabsTrigger>
             </TabsList>
@@ -318,9 +328,59 @@
   }
   .product-selector {
     flex-wrap: nowrap;
+    height: auto;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--foreground) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
   }
   .product-selector :deep([data-slot='tabs-trigger']) {
     white-space: nowrap;
+  }
+  .product-selector-trigger {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 22px !important;
+    border-radius: 999px !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--foreground) 55%, transparent) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .product-selector-trigger:hover {
+    color: rgb(var(--foreground)) !important;
+  }
+  .product-selector-trigger[data-state='active'] {
+    background: var(--accent) !important;
+    color: #fff !important;
+  }
+  .trigger-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--foreground) 8%, transparent);
+    color: color-mix(in srgb, var(--foreground) 55%, transparent);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .trigger-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 3px;
+  }
+  .product-selector-trigger[data-state='active'] .trigger-logo {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
   }
 
   /* ── Billing cycle toggle ── */
