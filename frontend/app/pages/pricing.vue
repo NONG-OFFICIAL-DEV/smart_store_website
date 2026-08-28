@@ -253,20 +253,24 @@
   }
   const studioTopFeatures = (plan: StudioPlan) => studioAllFeatures(plan).slice(0, 7)
 
-  // Rows are keyed by feature `key` (shared across plans that both list the
-  // same underlying feature) so each row lines up correctly even though
-  // every plan's feature list is independently admin-managed. A plan that
-  // doesn't have a given key just leaves that cell unset — ComparisonTable
-  // already renders a missing value as a dash.
+  // Rows are keyed by feature LABEL TEXT, not `key` — `key` is a
+  // per-row render id generated independently in each plan's own admin
+  // form (see studioPlanFeatures.ts), so it's never shared across plans
+  // and can't be used to align rows. Matching by trimmed label text works
+  // as long as admins type the row the same way across plans (e.g.
+  // "Users" everywhere, not "User" on one plan) — a stopgap until Studio's
+  // backend has a real shared feature-catalog id. A plan that doesn't have
+  // a given label just leaves that cell unset — ComparisonTable already
+  // renders a missing value as a dash.
   const studioFeatureRows = computed(() => {
     const rows: { label: string; values: Record<string, string> }[] = []
-    const rowIndexByKey = new Map<string, number>()
+    const rowIndexByLabel = new Map<string, number>()
     for (const plan of studioStore.plans) {
       for (const f of studioPlanFeatureList(plan, locale.value)) {
-        let index = rowIndexByKey.get(f.key)
+        let index = rowIndexByLabel.get(f.label)
         if (index === undefined) {
           index = rows.length
-          rowIndexByKey.set(f.key, index)
+          rowIndexByLabel.set(f.label, index)
           rows.push({ label: f.label, values: {} })
         }
         rows[index]!.values[plan.code] = f.value
