@@ -392,9 +392,15 @@ export interface StudioPlan {
   has_reports?: boolean
   has_telegram?: boolean
   has_api_access?: boolean
-  // Admin-set per-plan, per-locale overrides for any feature dimension's
-  // display label (e.g. `{ max_users: { en: 'Up to 2 users', km: '...' } }`)
-  // — only present for dimensions the admin has customized, see
-  // utils/studioPlanFeatures.ts's studioFeatureLabel() for the fallback rule.
-  feature_labels?: Record<string, { en: string; km?: string }>
+  // Admin-managed feature list for this plan — `key` identifies the
+  // underlying feature (shared across plans that both list it, so the
+  // comparison table can line up rows), `label` is the dimension's display
+  // name (e.g. "Users"), `value` is this plan's own text for it (e.g. "Up
+  // to 2 users"). Both are per-locale. This is now the only source for
+  // plan feature copy — see utils/studioPlanFeatures.ts.
+  feature_labels?: Array<{
+    key: string
+    label: { en: string; km?: string }
+    value: { en: string; km?: string }
+  }>
 }

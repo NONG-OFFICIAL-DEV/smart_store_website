@@ -248,47 +248,29 @@
     const perMonthAtCycle = studioTotalForCycle(referencePlan, months) / months
     return Math.round((1 - perMonthAtCycle / monthly) * 100)
   }
-  // Only dimensions the Studio admin has set a feature_labels entry for are
-  // shown — no static i18n text is used as a fallback anymore. Numeric
-  // dimensions show regardless of value (their label already communicates
-  // the count/unlimited state); boolean dimensions only show when enabled.
-  const STUDIO_FEATURE_KEYS = ['max_users', 'storage_limit_gb', 'monthly_order_limit'] as const
-  const STUDIO_BOOLEAN_FEATURE_KEYS = ['has_online_gallery', 'has_reports', 'has_telegram', 'has_api_access'] as const
-
   function studioAllFeatures(plan: StudioPlan): string[] {
-    const keys: string[] = [
-      ...STUDIO_FEATURE_KEYS,
-      ...STUDIO_BOOLEAN_FEATURE_KEYS.filter((key) => plan[key])
-    ]
-    return keys
-      .map((key) => studioFeatureLabel(plan, key, locale.value))
-      .filter((label): label is string => !!label)
+    return studioPlanFeatureList(plan, locale.value).map((f) => f.value)
   }
   const studioTopFeatures = (plan: StudioPlan) => studioAllFeatures(plan).slice(0, 7)
 
-  // A row's own heading text also comes from feature_labels (no static i18n
-  // key survives to name it) — taken from whichever plan first has a label
-  // for that dimension. A dimension no plan has labeled yet is dropped
-  // entirely rather than shown with a blank/guessed heading.
-  function firstStudioFeatureLabel(key: string): string | null {
-    for (const plan of studioStore.plans) {
-      const label = studioFeatureLabel(plan, key, locale.value)
-      if (label) return label
-    }
-    return null
-  }
-
+  // Rows are keyed by feature `key` (shared across plans that both list the
+  // same underlying feature) so each row lines up correctly even though
+  // every plan's feature list is independently admin-managed. A plan that
+  // doesn't have a given key just leaves that cell unset — ComparisonTable
+  // already renders a missing value as a dash.
   const studioFeatureRows = computed(() => {
-    const rows: { label: string; values: Record<string, string | boolean> }[] = []
-    for (const key of [...STUDIO_FEATURE_KEYS, ...STUDIO_BOOLEAN_FEATURE_KEYS]) {
-      const label = firstStudioFeatureLabel(key)
-      if (!label) continue
-      const isBoolean = (STUDIO_BOOLEAN_FEATURE_KEYS as readonly string[]).includes(key)
-      const values: Record<string, string | boolean> = {}
-      for (const plan of studioStore.plans) {
-        values[plan.code] = isBoolean ? !!plan[key as keyof StudioPlan] : studioFeatureLabel(plan, key, locale.value) ?? ''
+    const rows: { label: string; values: Record<string, string> }[] = []
+    const rowIndexByKey = new Map<string, number>()
+    for (const plan of studioStore.plans) {
+      for (const f of studioPlanFeatureList(plan, locale.value)) {
+        let index = rowIndexByKey.get(f.key)
+        if (index === undefined) {
+          index = rows.length
+          rowIndexByKey.set(f.key, index)
+          rows.push({ label: f.label, values: {} })
+        }
+        rows[index]!.values[plan.code] = f.value
       }
-      rows.push({ label, values })
     }
     return rows
   })

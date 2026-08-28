@@ -158,21 +158,8 @@
     return Math.round((1 - perMonthAtCycle / monthly) * 100)
   }
 
-  // Only dimensions the Studio admin has set a feature_labels entry for are
-  // shown — no static i18n text is used as a fallback anymore. Numeric
-  // dimensions show regardless of value (their label already communicates
-  // the count/unlimited state); boolean dimensions only show when enabled.
-  const STUDIO_FEATURE_KEYS = ['max_users', 'storage_limit_gb', 'monthly_order_limit'] as const
-  const STUDIO_BOOLEAN_FEATURE_KEYS = ['has_online_gallery', 'has_reports', 'has_telegram', 'has_api_access'] as const
-
   function planFeatures(plan: StudioPlan) {
-    const keys: string[] = [
-      ...STUDIO_FEATURE_KEYS,
-      ...STUDIO_BOOLEAN_FEATURE_KEYS.filter((key) => plan[key])
-    ]
-    return keys
-      .map((key) => studioFeatureLabel(plan, key, locale.value))
-      .filter((label): label is string => !!label)
+    return studioPlanFeatureList(plan, locale.value).map((f) => f.value)
   }
 </script>
 

@@ -1,12 +1,25 @@
 import type { StudioPlan } from '~/types'
 
-// Studio's own admin sets a per-plan, per-locale label for each feature
-// dimension it wants shown (a plan's `feature_labels`, e.g.
-// `{ max_users: { en: 'Up to 2 users', km: '...' } }`) — this is now the
-// only source for that copy (no static i18n fallback). Returns null when
-// the admin hasn't set a label for that dimension, so callers can skip it.
-export function studioFeatureLabel(plan: StudioPlan, key: string, locale: string): string | null {
-  const entry = plan.feature_labels?.[key]
-  if (!entry) return null
-  return (locale === 'km' ? entry.km : entry.en) || entry.en || null
+function resolveText(text: { en: string; km?: string } | undefined, locale: string): string {
+  if (!text) return ''
+  return (locale === 'km' ? text.km : text.en) || text.en || ''
+}
+
+// Studio's own admin manages a per-plan list of features (a plan's
+// `feature_labels` — see the StudioPlan type) — this is the only source
+// for plan feature copy now, no static i18n fallback. `key` identifies the
+// underlying feature, shared across plans that both list it (used to line
+// up comparison-table rows); `label` is that feature's display name,
+// `value` is this specific plan's text for it — both resolved to `locale`.
+export function studioPlanFeatureList(
+  plan: StudioPlan,
+  locale: string
+): Array<{ key: string; label: string; value: string }> {
+  return (plan.feature_labels ?? [])
+    .map((f) => ({
+      key: f.key,
+      label: resolveText(f.label, locale),
+      value: resolveText(f.value, locale)
+    }))
+    .filter((f) => !!f.value)
 }
