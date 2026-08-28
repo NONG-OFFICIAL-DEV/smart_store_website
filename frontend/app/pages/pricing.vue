@@ -305,9 +305,6 @@
 </script>
 
 <style scoped>
-  .pricing-page {
-    padding-top: 120px;
-  }
   .hub-header {
     max-width: 620px;
     margin: 0 auto 36px;
@@ -381,6 +378,22 @@
   .product-selector-trigger[data-state='active'] .trigger-logo {
     background: rgba(255, 255, 255, 0.25);
     color: #fff;
+  }
+  @media (max-width: 480px) {
+    .product-selector {
+      width: 100%;
+      padding: 4px;
+    }
+    .product-selector-trigger {
+      flex: 1 1 0;
+      gap: 6px;
+      padding: 8px 12px !important;
+      font-size: 0.78rem;
+    }
+    .trigger-logo {
+      width: 18px;
+      height: 18px;
+    }
   }
 
   /* ── Billing cycle toggle ── */
