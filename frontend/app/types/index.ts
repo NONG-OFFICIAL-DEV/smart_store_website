@@ -392,15 +392,20 @@ export interface StudioPlan {
   has_reports?: boolean
   has_telegram?: boolean
   has_api_access?: boolean
-  // Admin-managed feature list for this plan — `key` identifies the
-  // underlying feature (shared across plans that both list it, so the
-  // comparison table can line up rows), `label` is the dimension's display
-  // name (e.g. "Users"), `value` is this plan's own text for it (e.g. "Up
-  // to 2 users"). Both are per-locale. This is now the only source for
-  // plan feature copy — see utils/studioPlanFeatures.ts.
-  feature_labels?: Array<{
+  // Raw per-key values this plan has saved, keyed by Studio's admin-managed
+  // PlanFeatureListing catalog `key` — not read directly by this site
+  // (labels/types live in the catalog, not here). Kept for completeness.
+  feature_labels?: Record<string, boolean | { en: string; km?: string }>
+  // Server-resolved feature list — Studio joins feature_labels against its
+  // live PlanFeatureListing catalog so this site never has to guess a
+  // value's type or match rows across plans by fuzzy text: `key` is a real
+  // shared catalog id, `value_type` says how to render `value`. This is
+  // the only source this site reads for plan feature copy — see
+  // utils/studioPlanFeatures.ts.
+  feature_list?: Array<{
     key: string
+    value_type: 'boolean' | 'text'
     label: { en: string; km?: string }
-    value: { en: string; km?: string }
+    value: boolean | { en: string; km?: string }
   }>
 }

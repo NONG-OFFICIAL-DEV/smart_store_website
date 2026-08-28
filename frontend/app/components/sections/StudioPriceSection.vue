@@ -159,7 +159,7 @@
   }
 
   function planFeatures(plan: StudioPlan) {
-    return studioPlanFeatureList(plan, locale.value).map((f) => f.value)
+    return studioPlanBullets(plan, locale.value)
   }
 </script>
 

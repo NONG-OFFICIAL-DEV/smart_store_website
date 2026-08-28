@@ -205,14 +205,14 @@
   // Every distinct feature across this product's plans, dedup'd by key,
   // with a ✓/— per plan — real data, nothing invented.
   const posFeatureRows = computed(() => {
-    const rows = new Map<string, { label: string; values: Record<string, boolean> }>()
+    const rows = new Map<string, { key: string; label: string; values: Record<string, boolean> }>()
     for (const plan of posVisiblePlans.value) {
       for (const f of plan.features ?? []) {
         const key = f.key ?? f.id ?? f.en
         if (!key) continue
         if (!rows.has(key)) {
           const label = (locale.value === 'en' || locale.value === 'km' ? f[locale.value] : undefined) ?? f.en ?? key
-          rows.set(key, { label, values: {} })
+          rows.set(key, { key, label, values: {} })
         }
         rows.get(key)!.values[plan.code] = true
       }
@@ -249,29 +249,25 @@
     return Math.round((1 - perMonthAtCycle / monthly) * 100)
   }
   function studioAllFeatures(plan: StudioPlan): string[] {
-    return studioPlanFeatureList(plan, locale.value).map((f) => f.value)
+    return studioPlanBullets(plan, locale.value)
   }
   const studioTopFeatures = (plan: StudioPlan) => studioAllFeatures(plan).slice(0, 7)
 
-  // Rows are keyed by feature LABEL TEXT, not `key` — `key` is a
-  // per-row render id generated independently in each plan's own admin
-  // form (see studioPlanFeatures.ts), so it's never shared across plans
-  // and can't be used to align rows. Matching by trimmed label text works
-  // as long as admins type the row the same way across plans (e.g.
-  // "Users" everywhere, not "User" on one plan) — a stopgap until Studio's
-  // backend has a real shared feature-catalog id. A plan that doesn't have
-  // a given label just leaves that cell unset — ComparisonTable already
-  // renders a missing value as a dash.
+  // Rows are keyed by `key` — Studio's PlanFeatureListing catalog id,
+  // genuinely shared across every plan (unlike the old per-row render id
+  // this used to key by), so rows align correctly with no text-matching.
+  // A plan that doesn't have a given key just leaves that cell unset —
+  // ComparisonTable already renders a missing value as a dash.
   const studioFeatureRows = computed(() => {
-    const rows: { label: string; values: Record<string, string> }[] = []
-    const rowIndexByLabel = new Map<string, number>()
+    const rows: { key: string; label: string; values: Record<string, string | boolean> }[] = []
+    const rowIndexByKey = new Map<string, number>()
     for (const plan of studioStore.plans) {
-      for (const f of studioPlanFeatureList(plan, locale.value)) {
-        let index = rowIndexByLabel.get(f.label)
+      for (const f of studioPlanComparisonFeatures(plan, locale.value)) {
+        let index = rowIndexByKey.get(f.key)
         if (index === undefined) {
           index = rows.length
-          rowIndexByLabel.set(f.label, index)
-          rows.push({ label: f.label, values: {} })
+          rowIndexByKey.set(f.key, index)
+          rows.push({ key: f.key, label: f.label, values: {} })
         }
         rows[index]!.values[plan.code] = f.value
       }

@@ -14,7 +14,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in rows" :key="row.label">
+          <tr v-for="row in rows" :key="row.key">
             <td class="feature-col">{{ row.label }}</td>
             <td v-for="p in plans" :key="p.code">
               <Icon v-if="row.values[p.code] === true" name="mdi-check" size="16" class="cell-check" />
@@ -35,7 +35,7 @@
       subtitle: string
       featureLabel?: string
       plans: { code: string; name: string }[]
-      rows: { label: string; values: Record<string, boolean | string> }[]
+      rows: { key: string; label: string; values: Record<string, boolean | string> }[]
     }>(),
     { featureLabel: 'Feature' }
   )
