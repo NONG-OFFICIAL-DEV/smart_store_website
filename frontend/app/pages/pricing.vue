@@ -202,22 +202,25 @@
   const posVisiblePlans = computed(() =>
     (posStore.plans ?? []).filter((p) => p.is_active).map((p) => ({ ...p, popular: p.code === 'pro' }))
   )
-  // Every distinct feature across this product's plans, dedup'd by key,
-  // with a ✓/— per plan — real data, nothing invented.
+  // Rows are keyed by `key` — Smart Store's PlanFeatureListing catalog id,
+  // genuinely shared across every plan, so rows align correctly with no
+  // text-matching. A plan that doesn't have a given key just leaves that
+  // cell unset — ComparisonTable already renders a missing value as a dash.
   const posFeatureRows = computed(() => {
-    const rows = new Map<string, { key: string; label: string; values: Record<string, boolean> }>()
+    const rows: { key: string; label: string; values: Record<string, string | boolean> }[] = []
+    const rowIndexByKey = new Map<string, number>()
     for (const plan of posVisiblePlans.value) {
-      for (const f of plan.features ?? []) {
-        const key = f.key ?? f.id ?? f.en
-        if (!key) continue
-        if (!rows.has(key)) {
-          const label = (locale.value === 'en' || locale.value === 'km' ? f[locale.value] : undefined) ?? f.en ?? key
-          rows.set(key, { key, label, values: {} })
+      for (const f of posPlanComparisonFeatures(plan, locale.value)) {
+        let index = rowIndexByKey.get(f.key)
+        if (index === undefined) {
+          index = rows.length
+          rowIndexByKey.set(f.key, index)
+          rows.push({ key: f.key, label: f.label, values: {} })
         }
-        rows.get(key)!.values[plan.code] = true
+        rows[index]!.values[plan.code] = f.value
       }
     }
-    return [...rows.values()]
+    return rows
   })
 
   // ── Studio Management ────────────────────────────────────────────────

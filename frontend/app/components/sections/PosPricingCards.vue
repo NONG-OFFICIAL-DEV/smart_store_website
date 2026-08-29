@@ -71,9 +71,9 @@
         <div class="plan-divider" />
 
         <ul class="feature-list">
-          <li v-for="f in features(plan)" :key="f.key" class="feature-item">
+          <li v-for="f in features(plan)" :key="f" class="feature-item">
             <Icon name="mdi-check" size="14" class="feature-check" />
-            <span>{{ f.label }}</span>
+            <span>{{ f }}</span>
           </li>
         </ul>
 
@@ -143,10 +143,7 @@
     return Number(cycleForSelected(plan)?.discount_percent ?? 0)
   }
   function features(plan: PosPlan) {
-    return (plan.features ?? []).map((f, i) => ({
-      key: f.id ?? f.key ?? String(i),
-      label: (locale.value === 'en' || locale.value === 'km' ? f[locale.value] : undefined) ?? f.en ?? f.key ?? ''
-    }))
+    return posPlanBullets(plan, locale.value)
   }
 
   const localePath = useLocalePath()

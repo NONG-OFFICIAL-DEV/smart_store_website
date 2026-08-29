@@ -369,7 +369,22 @@ export interface PosPlan {
   price_usd: string | number
   is_active: boolean
   billing_cycles: BillingCycle[]
-  features: Array<{ id?: string; key?: string; en: string; km?: string }>
+  // Raw per-key values this plan has saved, keyed by Smart Store's
+  // admin-managed PlanFeatureListing catalog `key` — not read directly by
+  // this site (labels/types live in the catalog, not here).
+  features?: Array<{ id?: string; key: string; value: boolean | { en: string; km?: string }; sort_order?: number }>
+  // Server-resolved feature list — Smart Store joins each plan's own
+  // features against its live PlanFeatureListing catalog so this site
+  // never has to guess a value's type or match rows across plans by
+  // fuzzy text: `key` is a real shared catalog id, `value_type` says how
+  // to render `value`. This is the only source this site reads for plan
+  // feature copy — see utils/posPlanFeatures.ts.
+  feature_list?: Array<{
+    key: string
+    value_type: 'boolean' | 'text'
+    label: { en: string; km?: string }
+    value: boolean | { en: string; km?: string }
+  }>
 }
 
 // Fetched live from Studio's own product API (services/studioPlans.ts) —
